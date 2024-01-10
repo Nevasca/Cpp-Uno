@@ -1,0 +1,360 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'Remove turning ~ into an icon so we can better declare destructors
+skinparam classAttributeIconSize 0
+
+package Uno
+{
+    class UnoGame
+    {
+        EGameState CurrentState
+        bool IsFinished() const
+        bool Update()
+    }
+    
+    enum EGameState
+    {
+        MainMenu
+        Playing
+        MatchOutcome
+    }
+    
+    package MaiMenu
+    {
+        class MainMenuController
+    }
+    
+    package Game
+    {
+        interface IMatchHandler
+        {
+            bool CanUseCard(const Card& Card)
+            void UseCard(const Player& Player, shared_ptr<Card> Card)
+            void BuyCardsFor(Player& Player, int Amount)
+            void ChangeCurrentColor(Player& Player, EColor Color)
+            bool CanYellUno(const Player& Player)
+            void YellUno(const Player& Player)
+            const Card& PeekCurrentCard()
+        }
+        
+        class MatchController
+        {    
+            vector<shared_ptr<Player>> Players;
+            void Initialize()        
+            void Update()
+            bool CanUseCard(const Card& Card)
+            void UseCard(const Player& Player, shared_ptr<Card> Card)
+            void BuyCardsFor(Player& Player, int Amount)
+            void ChangeCurrentColor(Player& Player, EColor Color)
+            bool CanYellUno(const Player& Player)
+            void YellUno(const Player& Player)
+            const Card& PeekCurrentCard()
+            bool HasWon(shared_ptr<Player> Player)                
+        }    
+            
+        package Match
+        {
+            class Board
+            {
+                shared_ptr<Card> TossedCards
+                
+                void Stack()
+                shared_ptr<Card> BuyCards(int Amount)
+                shared_ptr<Card> BuyAllCards()
+                const Card& PeekCurrentCard()
+                void ChangeCurrentCardColor(EColor Color)        
+            }    
+        }
+        
+        interface ITurnActionHandler
+        {
+            void AddPreTurnAction(TurnAction&& TurnAction)
+            void AddPostTurnAction(TurnAction&& TurnAction)                        
+        }             
+        
+        interface ITurnHandler
+        {
+            void ReverseFlow()
+            void JumpTurn()
+            int GetCurrentTurnNumber()
+        }   
+        
+        abstract class TurnAction
+        {
+            ETurnResult Execute(IMatchHandler& Match, ITurnHandler& TurnHandler, Player& Player)
+            bool CanAccumulate(const TurnAction& Action) const
+            void Accumulate(TurnAction&& Action)            
+        }
+        
+        interface IDeckHandler
+        {
+            shared_ptr<Card> BuyCards(int Amount)
+            shared_ptr<Card> BuyAllCards()
+        }
+       
+        abstract class Card 
+        {
+            EColor Color
+            ~ virtual Card()
+            virtual bool CanStackOn(const Card& OtherCard) const;
+            virtual void Use();
+            string GetAbbreviation() const;
+        }
+        
+        enum EColor 
+        {
+            Blue
+            Yellow
+            Red
+            Green
+            Wild
+        }        
+        
+        enum ETurnResult
+        {
+            Ended
+            Running
+        }
+        
+        abstract class Player 
+        {
+            string Name
+            vector<weak_ptr<Card>> Cards
+            bool bHasYelledUno
+            
+            int GetTotalCards()
+            bool HasCardToStackOn(const Card& Other)            
+            virtual void PlayTurn(IMatchHandler& Match)
+            void ChooseColor(IMatchHandler& Match)            
+        }
+        
+        package Cards 
+        {                
+            class NumberCard 
+            {
+                short Number
+                
+                virtual bool CanStackOn(const Card& OtherCard) const override
+            }
+            
+            interface ICardAction 
+            {
+                int GetId() const
+                void Execute()
+            }
+            
+            class SpecialCard
+            {
+                ICardAction& Action
+                
+                SpecialCard(ICardAction& Action)
+                virtual bool CanStackOn(const Card& OtherCard) const override
+                virtual void Use()
+            }
+            
+            class DeckController
+            {       
+                shared_ptr<Card> Cards
+                IDeckHandler& SpareDeck
+                
+                void Initialize(IDeckHandler& InSpareDeck, ITurnActionHandler& TurnActionHandler)
+                shared_ptr<Card> BuyCards(int Amount)
+                shared_ptr<Card> BuyAllCards()
+                void Shuffle()            
+            }
+            
+            class CardFactory
+            {
+                shared_ptr<ReverseCardAction> ReverseCardAction
+                shared_ptr<JumpCardAction> JumpCardAction
+                shared_ptr<BuyCardAction> BuyTwoCardAction
+                shared_ptr<BuyCardAction> BuyFourCardAction
+                
+                vector<shared_ptr<Card>> CreateNumberCard()
+                vector<shared_ptr<Card>> CreateReverseCard(const ITurnActionHandler& TurnActionHandler)            
+                vector<shared_ptr<Card>> CreateJumpCard(const ITurnActionHandler& TurnActionHandler)            
+                vector<shared_ptr<Card>> CreateBuyTwoCard(const ITurnActionHandler& TurnActionHandler)
+                vector<shared_ptr<Card>> CreateBuyFourCard(const ITurnActionHandler& TurnActionHandler)                        
+            }
+            
+            class BuyCardAction
+            {
+                int Amount            
+                const ITurnActionHandler& TurnActionHandler
+                void Execute()
+            }
+            
+            class BuyTurnAction 
+            {
+                bool bCanCounter
+            }            
+            
+            class ReverseCardAction
+            {
+                const ITurnActionHandler& TurnActionHandler
+                void Execute()
+            }
+            
+            class ReverseTurnAction
+            
+            class JumpCardAction
+            {
+                const ITurnActionHandler& TurnActionHandler
+                void Execute()
+            }
+            
+            class JumpTurnAction
+            
+            class WildBuyCardAction
+            {
+                int Amount            
+                const ITurnActionHandler& TurnActionHandler
+                void Execute()
+            }
+            
+            class ChooseColorTurnAction
+            
+            ReverseCardAction --> ReverseTurnAction
+            JumpCardAction --> JumpTurnAction
+                        
+            BuyCardAction --> BuyTurnAction            
+            
+            WildBuyCardAction --> BuyTurnAction
+            WildBuyCardAction --> ChooseColorTurnAction
+            
+            JumpTurnAction ---|> TurnAction
+            ReverseTurnAction ---|> TurnAction  
+            ChooseColorTurnAction ---|> TurnAction
+            BuyTurnAction ----|> TurnAction
+        }
+        
+        package Turn 
+        {
+            class TurnController 
+            {
+                ETurnFlow CurrentFlow
+                vector<Player> Players
+                unique_ptr<TurnAction> PreTurnAction
+                unique_ptr<TurnAction> PostTurnAction
+                
+                void StartNextTurn(IMatchHandler& Match)
+                void AddPreTurnAction(TurnAction&& TurnAction)
+                void AddPostTurnAction(TurnAction&& TurnAction)
+                shared_ptr<Player> PeekCurrentPlayer()
+            }
+            
+            enum ETurnFlow
+            {
+                Clockwise
+                AntiClockwise
+            }    
+        }
+        
+        package Players
+        {                
+            class ConsolePlayerInput
+            {
+                int CardIndex
+                bool bHasYelledUno
+                EColor ChosenColor
+                
+                void ProcessInput()                                
+            }
+            
+            class HumanPlayer
+            {
+                virtual void PlayTurn(IMatchHandler& Match) override
+            }                
+            
+            package AI
+            {
+                class PlayerBot
+                {
+                    virtual void PlayTurn(IMatchHandler& Match) override
+                }
+            }
+        }
+        
+        package UI
+        {
+            class UIController
+            {
+                void ShowCardUsed(const Card& Card, const Player& Player)
+                void ShowCardsBought(const vector<shared_ptr<Card>> Cards, const Player& Player)
+                void ShowCurrentColorChanged(const Player& Player, EColor Color)
+                void ShowCurrentTurn(const ITurnHandler& TurnHandler)
+                void ShowPlayerHand(const IMatchContext& Match, const Player& Player)                
+                void ShowUnoYelled(const Player& Player)
+                void ShowWinner(const Player& Player)
+            }
+        
+            class CardConsolePresenter
+            {
+                Show(const Card& Card)
+                Show(vector<shared_ptr<Card>> Cards)
+            }
+            
+            Card <.. UIController            
+            Player <.. UIController            
+            IMatchHandler <.. UIController            
+            UIController ..> ITurnHandler 
+            
+            UIController --> CardConsolePresenter           
+        }        
+        
+        MatchController ..> Card
+        MatchController --> Player
+        MatchController ---> DeckController
+        MatchController ---> TurnController
+        MatchController ---> Board
+        MatchController -----> UIController
+        IMatchHandler <|.. MatchController
+        IMatchHandler <.. Player
+        IMatchHandler <.. TurnController
+        
+        TurnController ----|> ITurnActionHandler
+        TurnController ----|> ITurnHandler    
+        TurnController -> ETurnFlow
+        TurnController --> ETurnResult
+        TurnController ..> TurnAction
+        Player <.. TurnController
+        
+        Card -> EColor
+        Card <|-- NumberCard
+        Card <|-- SpecialCard        
+        
+        SpecialCard o-- ICardAction
+        ICardAction <|-- BuyCardAction
+        ICardAction <|-- ReverseCardAction
+        ICardAction <|-- JumpCardAction
+        ICardAction <|-- WildBuyCardAction
+        ITurnActionHandler <...  JumpCardAction
+        ITurnActionHandler <...  ReverseCardAction
+        ITurnActionHandler <...  BuyCardAction 
+        ITurnActionHandler ....> TurnAction                              
+               
+        Card <.. Player
+        CardFactory ---> NumberCard 
+        CardFactory ---> SpecialCard
+        CardFactory ---> ICardAction
+        
+        IDeckHandler <|-- DeckController
+        IDeckHandler <|-- Board
+        DeckController ----> CardFactory
+        DeckController ..> ITurnActionHandler    
+        
+        Player <|-- HumanPlayer    
+        Player <|-- PlayerBot
+        HumanPlayer o-- ConsolePlayerInput
+        
+        TurnAction -> ETurnResult
+        TurnAction ..> ITurnHandler        
+    }  
+    
+    UnoGame -> EGameState      
+    UnoGame -----> MatchController
+    UnoGame ----> MainMenuController
+}
+
+@enduml
