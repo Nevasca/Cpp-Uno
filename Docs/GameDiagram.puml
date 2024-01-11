@@ -8,25 +8,28 @@ package Uno
 {
     class UnoGame
     {
-        EGameState CurrentState
+        GameState CurrentState
         bool IsFinished() const
         bool Update()
     }
     
-    enum EGameState
+    abstract class GameState
     {
-        MainMenu
-        Playing
-        MatchOutcome
+        void Enter()
+        void Exit()
+        void Update()
     }
     
     package MaiMenu
     {
         class MainMenuController
+        class MainMenuState
     }
     
     package Game
     {
+        class MatchState        
+    
         interface IMatchHandler
         {
             bool CanUseCard(const Card& Card)
@@ -96,6 +99,7 @@ package Uno
         abstract class Card 
         {
             EColor Color
+            int Id
             ~ virtual Card()
             virtual bool CanStackOn(const Card& OtherCard) const;
             virtual void Use();
@@ -138,21 +142,6 @@ package Uno
                 virtual bool CanStackOn(const Card& OtherCard) const override
             }
             
-            interface ICardAction 
-            {
-                int GetId() const
-                void Execute()
-            }
-            
-            class SpecialCard
-            {
-                ICardAction& Action
-                
-                SpecialCard(ICardAction& Action)
-                virtual bool CanStackOn(const Card& OtherCard) const override
-                virtual void Use()
-            }
-            
             class DeckController
             {       
                 shared_ptr<Card> Cards
@@ -166,11 +155,6 @@ package Uno
             
             class CardFactory
             {
-                shared_ptr<ReverseCardAction> ReverseCardAction
-                shared_ptr<JumpCardAction> JumpCardAction
-                shared_ptr<BuyCardAction> BuyTwoCardAction
-                shared_ptr<BuyCardAction> BuyFourCardAction
-                
                 vector<shared_ptr<Card>> CreateNumberCard()
                 vector<shared_ptr<Card>> CreateReverseCard(const ITurnActionHandler& TurnActionHandler)            
                 vector<shared_ptr<Card>> CreateJumpCard(const ITurnActionHandler& TurnActionHandler)            
@@ -178,11 +162,12 @@ package Uno
                 vector<shared_ptr<Card>> CreateBuyFourCard(const ITurnActionHandler& TurnActionHandler)                        
             }
             
-            class BuyCardAction
+            class BuyCard
             {
                 int Amount            
                 const ITurnActionHandler& TurnActionHandler
-                void Execute()
+                virtual bool CanStackOn(const Card& OtherCard) override const;
+                virtual void Use() override;
             }
             
             class BuyTurnAction 
@@ -190,43 +175,33 @@ package Uno
                 bool bCanCounter
             }            
             
-            class ReverseCardAction
+            class ReverseCard
             {
                 const ITurnActionHandler& TurnActionHandler
-                void Execute()
+                virtual bool CanStackOn(const Card& OtherCard) override const;
+                virtual void Use() override;
             }
             
             class ReverseTurnAction
             
-            class JumpCardAction
+            class JumpCard
             {
                 const ITurnActionHandler& TurnActionHandler
-                void Execute()
+                virtual bool CanStackOn(const Card& OtherCard) override const;
+                virtual void Use() override;
             }
             
             class JumpTurnAction
             
-            class WildBuyCardAction
+            class WildBuyCard
             {
                 int Amount            
                 const ITurnActionHandler& TurnActionHandler
-                void Execute()
+                virtual bool CanStackOn(const Card& OtherCard) override const;
+                virtual void Use() override;
             }
             
             class ChooseColorTurnAction
-            
-            ReverseCardAction --> ReverseTurnAction
-            JumpCardAction --> JumpTurnAction
-                        
-            BuyCardAction --> BuyTurnAction            
-            
-            WildBuyCardAction --> BuyTurnAction
-            WildBuyCardAction --> ChooseColorTurnAction
-            
-            JumpTurnAction ---|> TurnAction
-            ReverseTurnAction ---|> TurnAction  
-            ChooseColorTurnAction ---|> TurnAction
-            BuyTurnAction ----|> TurnAction
         }
         
         package Turn 
@@ -295,66 +270,85 @@ package Uno
                 Show(vector<shared_ptr<Card>> Cards)
             }
             
-            Card <.. UIController            
-            Player <.. UIController            
-            IMatchHandler <.. UIController            
-            UIController ..> ITurnHandler 
+                      
+        }
+        
+        UIController ...> Card             
+                UIController ...> Player             
+                IMatchHandler <... UIController              
+                UIController ...> ITurnHandler                     
+                UIController --> CardConsolePresenter        
+                
+                MatchController ...> Card
+                MatchController ...> Player
+                MatchController ---> DeckController
+                MatchController ---> TurnController
+                MatchController ----> Board
+                MatchController ---> UIController
+                MatchController --|> IMatchHandler 
+                
+                Player ...> IMatchHandler 
+                TurnController ...> IMatchHandler 
+                
+                TurnController ---|> ITurnActionHandler 
+                ITurnHandler <|-- TurnController
+                TurnController -> ETurnFlow
+                TurnController ---> ETurnResult
+                TurnController ...> TurnAction
+                TurnController ...> Player 
+                
+                Card -> EColor
+                Card <|---- NumberCard
+                Card <|-- BuyCard
+                Card <|--- ReverseCard
+                Card <|--- JumpCard
+                Card <|--- WildBuyCard
+                
+                ReverseCard --> ReverseTurnAction
+                JumpCard --> JumpTurnAction                
+                BuyCard --> BuyTurnAction                    
+                WildBuyCard --> BuyTurnAction
+                WildBuyCard --> ChooseColorTurnAction
+                
+                JumpTurnAction ---|> TurnAction
+                ReverseTurnAction ---|> TurnAction  
+                ChooseColorTurnAction ---|> TurnAction
+                BuyTurnAction ---|> TurnAction
+                
+                JumpCard ...> ITurnActionHandler
+                ReverseCard ....> ITurnActionHandler
+                BuyCard ....> ITurnActionHandler
+                WildBuyCard ....> ITurnActionHandler 
+                ITurnActionHandler ...> TurnAction                              
+                       
+                Player ...> Card
+                CardFactory ---> NumberCard 
+                CardFactory ---> BuyCard 
+                CardFactory ---> ReverseCard 
+                CardFactory ---> JumpCard 
+                CardFactory ---> WildBuyCard 
+                
+                IDeckHandler <|--- DeckController
+                IDeckHandler <|--- Board
+                DeckController --> CardFactory
+                DeckController ...> ITurnActionHandler    
+                
+                Player <|-- HumanPlayer    
+                Player <|-- PlayerBot
+                HumanPlayer o- ConsolePlayerInput
+                
+                TurnAction -> ETurnResult
+                TurnAction ..> ITurnHandler   
+                
+                GameState <|--- MatchState
+                MatchState ---> MatchController     
+            }  
+                     
+            MainMenuState --> MainMenuController
+            GameState <|--- MainMenuState
             
-            UIController --> CardConsolePresenter           
-        }        
-        
-        MatchController ..> Card
-        MatchController --> Player
-        MatchController ---> DeckController
-        MatchController ---> TurnController
-        MatchController ---> Board
-        MatchController -----> UIController
-        IMatchHandler <|.. MatchController
-        IMatchHandler <.. Player
-        IMatchHandler <.. TurnController
-        
-        TurnController ----|> ITurnActionHandler
-        TurnController ----|> ITurnHandler    
-        TurnController -> ETurnFlow
-        TurnController --> ETurnResult
-        TurnController ..> TurnAction
-        Player <.. TurnController
-        
-        Card -> EColor
-        Card <|-- NumberCard
-        Card <|-- SpecialCard        
-        
-        SpecialCard o-- ICardAction
-        ICardAction <|-- BuyCardAction
-        ICardAction <|-- ReverseCardAction
-        ICardAction <|-- JumpCardAction
-        ICardAction <|-- WildBuyCardAction
-        ITurnActionHandler <...  JumpCardAction
-        ITurnActionHandler <...  ReverseCardAction
-        ITurnActionHandler <...  BuyCardAction 
-        ITurnActionHandler ....> TurnAction                              
-               
-        Card <.. Player
-        CardFactory ---> NumberCard 
-        CardFactory ---> SpecialCard
-        CardFactory ---> ICardAction
-        
-        IDeckHandler <|-- DeckController
-        IDeckHandler <|-- Board
-        DeckController ----> CardFactory
-        DeckController ..> ITurnActionHandler    
-        
-        Player <|-- HumanPlayer    
-        Player <|-- PlayerBot
-        HumanPlayer o-- ConsolePlayerInput
-        
-        TurnAction -> ETurnResult
-        TurnAction ..> ITurnHandler        
-    }  
-    
-    UnoGame -> EGameState      
-    UnoGame -----> MatchController
-    UnoGame ----> MainMenuController
+            UnoGame ---> MainMenuState
+            UnoGame ---> MatchState
 }
 
 @enduml
