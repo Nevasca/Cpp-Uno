@@ -18,5 +18,5 @@ uint16_t Card::GetId() const
 
 bool Card::CanStackOn(const Card& OtherCard) const
 {
-    return Color == OtherCard.GetColor();
+    return Color == OtherCard.GetColor() || Color == EColor::Wild;
 }
