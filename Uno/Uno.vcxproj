@@ -234,6 +234,7 @@
     <ClCompile Include="Uno.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Public\Core\Core.h" />
     <ClInclude Include="Public\Game\Card.h" />
     <ClInclude Include="Public\Game\EColor.h" />
   </ItemGroup>

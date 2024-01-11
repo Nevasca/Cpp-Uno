@@ -2,6 +2,7 @@
 #include <cstdint>
 
 #include "EColor.h"
+#include "Public/Core/Core.h"
 
 class Card
 {
@@ -13,11 +14,9 @@ public:
     uint16_t GetId() const;
     virtual bool CanStackOn(const Card& OtherCard) const;
     virtual void Use() = 0;
-    Card(const Card& Other) = delete;
-    Card& operator = (const Card& Other) = delete;
-    Card(Card&& Other) = delete;
-    Card& operator = (Card&& other) = delete;
     virtual ~Card() = default;
+
+    NO_COPY_MOVE(Card)
 
 protected:
 
