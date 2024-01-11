@@ -20,10 +20,9 @@ public:
 
 protected:
 
-    Card() = default;
-
-private:
-
     uint16_t Id{0};
     EColor Color{EColor::Blue};
+    
+    Card() = default;
+    Card(uint16_t InId, EColor InColor);
 };
