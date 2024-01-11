@@ -20,3 +20,11 @@ The solution was created using [Rider](https://www.jetbrains.com/pt-br/rider/) a
 * Make sure you have [Visual Studio](https://visualstudio.microsoft.com/pt-br/vs/community/) installed with C++ desktop development checked during installation (Rider uses this toolset for compiling);
 * Open `Uno.sln` solution;
 * On topmost right corner, use the play button to run the 'Uno' project.
+
+## Architecture
+
+* Simple state machine approach for handling game states (main menu, playing a match);
+* Actions to handle pre-turn and post-turn situation (next player needs to buy cards, skip this player turn);
+* Abstraction on player to handle creating a player bot on the future.
+
+![GameSimplifiedDiagram.png](Docs/GameSimplifiedDiagram.png)
