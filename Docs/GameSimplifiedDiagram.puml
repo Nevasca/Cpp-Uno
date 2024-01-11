@@ -1,0 +1,191 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'Remove turning ~ into an icon so we can better declare destructors
+skinparam classAttributeIconSize 0
+
+package Uno
+{
+    class UnoGame
+    {
+        GameState CurrentState
+        bool IsFinished() const
+        bool Update()
+    }
+    
+    abstract class GameState
+    {
+        void Enter()
+        void Exit()
+        void Update()
+    }
+    
+    package MaiMenu
+    {
+        class MainMenuController
+        class MainMenuState
+    }
+    
+    package Game
+    {
+        class MatchState        
+    
+        interface IMatchHandler
+        
+        class MatchController
+            
+        package Match
+        {
+            class Board
+        }
+        
+        interface ITurnActionHandler
+        
+        interface ITurnHandler
+        
+        abstract class TurnAction
+        
+        interface IDeckHandler
+       
+        abstract class Card 
+        
+        enum EColor 
+        
+        enum ETurnResult
+        {
+            Ended
+            Running
+        }
+        
+        abstract class Player 
+        
+        package Cards 
+        {                
+            
+            class DeckController
+            
+            class CardFactory
+            
+            class NumberCard
+             
+            class BuyCard
+            class BuyTurnAction 
+            
+            class ReverseCard
+            class ReverseTurnAction
+            
+            class JumpCard
+            class JumpTurnAction
+            
+            class WildBuyCard
+            class ChooseColorTurnAction
+        }
+        
+        package Turn 
+        {
+            class TurnController 
+            
+            enum ETurnFlow
+            {
+                Clockwise
+                AntiClockwise
+            }    
+        }
+        
+        package Players
+        {                
+            class ConsolePlayerInput
+            
+            class HumanPlayer
+            
+            package AI
+            {
+                class PlayerBot
+            }
+        }
+        
+        package UI
+        {
+            class UIController
+            class CardConsolePresenter
+        }
+        
+        UIController ...> Card             
+        UIController ...> Player             
+        IMatchHandler <... UIController              
+        UIController ...> ITurnHandler                     
+        UIController --> CardConsolePresenter        
+        
+        MatchController ...> Card
+        MatchController ...> Player
+        MatchController ---> DeckController
+        MatchController ---> TurnController
+        MatchController ----> Board
+        MatchController ---> UIController
+        MatchController --|> IMatchHandler 
+        
+        Player ...> IMatchHandler 
+        TurnController ...> IMatchHandler 
+        
+        TurnController ---|> ITurnActionHandler 
+        ITurnHandler <|-- TurnController
+        TurnController -> ETurnFlow
+        TurnController ---> ETurnResult
+        TurnController ...> TurnAction
+        TurnController ...> Player 
+        
+        Card -> EColor
+        Card <|---- NumberCard
+        Card <|-- BuyCard
+        Card <|--- ReverseCard
+        Card <|--- JumpCard
+        Card <|--- WildBuyCard
+        
+        ReverseCard --> ReverseTurnAction
+        JumpCard --> JumpTurnAction                
+        BuyCard --> BuyTurnAction                    
+        WildBuyCard --> BuyTurnAction
+        WildBuyCard --> ChooseColorTurnAction
+        
+        JumpTurnAction ---|> TurnAction
+        ReverseTurnAction ---|> TurnAction  
+        ChooseColorTurnAction ---|> TurnAction
+        BuyTurnAction ---|> TurnAction
+        
+        JumpCard ...> ITurnActionHandler
+        ReverseCard ....> ITurnActionHandler
+        BuyCard ....> ITurnActionHandler
+        WildBuyCard ....> ITurnActionHandler 
+        ITurnActionHandler ...> TurnAction                              
+               
+        Player ...> Card
+        CardFactory ---> NumberCard 
+        CardFactory ---> BuyCard 
+        CardFactory ---> ReverseCard 
+        CardFactory ---> JumpCard 
+        CardFactory ---> WildBuyCard 
+        
+        IDeckHandler <|--- DeckController
+        IDeckHandler <|--- Board
+        DeckController --> CardFactory
+        DeckController ...> ITurnActionHandler    
+        
+        Player <|-- HumanPlayer    
+        Player <|-- PlayerBot
+        HumanPlayer o- ConsolePlayerInput
+        
+        TurnAction -> ETurnResult
+        TurnAction ..> ITurnHandler   
+        
+        GameState <|--- MatchState
+        MatchState ---> MatchController     
+    }  
+             
+    MainMenuState --> MainMenuController
+    GameState <|--- MainMenuState
+    
+    UnoGame ---> MainMenuState
+    UnoGame ---> MatchState
+}
+
+@enduml
