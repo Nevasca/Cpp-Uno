@@ -1,6 +1,6 @@
 ﻿#include "Public/Game/Cards/NumberCard.h"
 
-NumberCard::NumberCard(uint16_t InId, EColor InColor, uint16_t InNumber)
+NumberCard::NumberCard(const uint16_t InId, const EColor InColor, const uint16_t InNumber)
     : Card(InId, InColor), Number(InNumber)
 { }
 
