@@ -8,5 +8,5 @@ HumanPlayer::HumanPlayer(std::string&& InName)
 
 void HumanPlayer::PlayTurn()
 {
-    std::cout << Name << " has chosen to just watch...";
+    std::cout << Name << " has chosen to just watch...\n";
 }
