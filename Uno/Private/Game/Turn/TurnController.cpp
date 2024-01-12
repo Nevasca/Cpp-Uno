@@ -1,10 +1,14 @@
 ﻿#include "Public/Game/Turn/TurnController.h"
 
+#include <assert.h>
+
 #include "Public/Game/Player.h"
 
 TurnController::TurnController(const std::vector<std::shared_ptr<Player>>& InPlayers)
     : Players(InPlayers)
-{ }
+{
+    assert(!InPlayers.empty());
+}
 
 void TurnController::PlayTurn()
 {
