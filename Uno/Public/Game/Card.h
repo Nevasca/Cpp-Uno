@@ -14,6 +14,7 @@ public:
     uint16_t GetId() const;
     virtual bool CanStackOn(const Card& OtherCard) const;
     virtual void Use() = 0;
+    virtual std::string ToShortString() const = 0;
     virtual ~Card() = default;
 
     NO_COPY_MOVE(Card)
