@@ -23,3 +23,8 @@ bool NumberCard::CanStackOn(const Card& OtherCard) const
 
     return OtherNumberCard != nullptr && Number == OtherNumberCard->Number;
 }
+
+std::string NumberCard::ToShortString() const
+{
+    return ConvertColorToString(Color).substr(0, 1) + "#" + std::to_string(Number);
+}
