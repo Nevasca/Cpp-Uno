@@ -7,9 +7,13 @@ void Board::Stack(std::shared_ptr<Card>&& Card)
     TossedCards.emplace_back(std::move(Card));
 }
 
-const Card& Board::PeekCurrentCard() const
+std::shared_ptr<Card> Board::PeekCurrentCard() const
 {
+    if(TossedCards.empty())
+    {
+        return nullptr;
+    }
     assert(!TossedCards.empty());
 
-    return *TossedCards.back();
+    return TossedCards.back();
 }

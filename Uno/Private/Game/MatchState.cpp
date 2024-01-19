@@ -1,23 +1,23 @@
 ﻿#include "Public/Game/MatchState.h"
-
-#include <iostream>
-
 #include "Public/Core/StateMachine.h"
 
 void MatchState::Enter()
-{ }
+{
+    MatchController.Initialize();
+    MatchController.Start();
+}
 
 void MatchState::Update(StateMachine& StateMachine)
 {
-    std::cout << "\nPress something (-1 to exit)...";
-    int input;
-    std::cin >> input;
+    MatchController.Update();
 
-    if(input == -1)
+    if(MatchController.IsMatchFinished())
     {
         StateMachine.Stop();
     }
 }
 
 void MatchState::Exit()
-{ }
+{
+    MatchController.Shutdown();
+}

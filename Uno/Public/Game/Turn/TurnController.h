@@ -11,7 +11,8 @@ class TurnController
 {
 public:
 
-    TurnController(const std::vector<std::shared_ptr<Player>>& InPlayers);
+    void Initialize(const std::vector<std::shared_ptr<Player>>& InPlayers);
+    void ShufflePlayers();
     void PlayTurn();
     void PrepareNextTurn();
     uint32_t GetCurrentTurnIndex() const;

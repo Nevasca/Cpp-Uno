@@ -6,7 +6,6 @@
 void DeckController::Initialize()
 {
     CreateDeck();
-    ShuffleCards();
 }
 
 void DeckController::ShuffleCards()

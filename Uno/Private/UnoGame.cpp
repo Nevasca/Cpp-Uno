@@ -2,10 +2,13 @@
 
 #include <memory>
 
+#include "Public/Core/Random.h"
 #include "Public/Game/MatchState.h"
 
 void UnoGame::Start()
 {
+    Random::SetRandomSeed();
+
     CreateGameStates();
     StateMachine.SetState<MatchState>();
 }

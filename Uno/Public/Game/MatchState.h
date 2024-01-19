@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "MatchController.h"
 #include "Public/Core/IState.h"
 
 class MatchState : public IState
@@ -10,4 +11,7 @@ public:
     void Exit() override;
     ~MatchState() = default;
 
+private:
+
+    MatchController MatchController{};
 };
