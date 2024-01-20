@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Public/Game/Card.h"
 #include "Public/Game/Players/HumanPlayer.h"
 
 void MatchController::Initialize()
@@ -32,6 +33,8 @@ void MatchController::Start()
 
 void MatchController::Update()
 {
+    UIController.ShowPlayerHand(*this, *TurnController.PeekCurrentPlayer());
+
     std::cout << "\n[MatchController]Press something (-1 to exit)...";
     int input;
     std::cin >> input;
@@ -42,6 +45,18 @@ void MatchController::Update()
 bool MatchController::IsMatchFinished() const
 {
     return bIsMatchFinished;
+}
+
+bool MatchController::CanUseCard(const Card& DesiredCard) const
+{
+    const std::shared_ptr<Card> CurrentCard = Board.PeekCurrentCard();
+
+    if(!CurrentCard)
+    {
+        return true;
+    }
+
+    return DesiredCard.CanStackOn(*CurrentCard);
 }
 
 void MatchController::Shutdown()
