@@ -8,5 +8,10 @@ HumanPlayer::HumanPlayer(std::string&& InName)
 
 void HumanPlayer::PlayTurn()
 {
-    std::cout << Name << " has chosen to just watch...\n";
+    Input.Process();
+
+    if(Input.HasSelectedCard())
+    {
+        std::cout << Name << " has chosen card index " + std::to_string(Input.GetSelectedCardIndex()) + "\n";
+    }
 }
