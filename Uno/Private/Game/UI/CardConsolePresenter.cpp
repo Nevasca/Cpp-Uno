@@ -14,17 +14,17 @@ void CardConsolePresenter::Show(const std::vector<std::shared_ptr<Card>>& Cards)
     constexpr int TotalCharsPerCard = 6;
     constexpr int TotalLineBreaks = 1;
 
-    std::string Result{};
-    Result.reserve(Cards.size() * TotalCharsPerCard + TotalLineBreaks);
+    std::string Output{};
+    Output.reserve(Cards.size() * TotalCharsPerCard + TotalLineBreaks);
 
     for(const std::shared_ptr<Card>& Card : Cards)
     {
-        Result += Card->ToShortString() + "   ";
+        Output += Card->ToShortString() + "   ";
     }
 
-    Result += "\n";
+    Output += "\n";
     
-    std::cout << Result;
+    std::cout << Output;
 }
 
 void CardConsolePresenter::Show(const std::vector<CardRenderData>& CardsData)
@@ -32,22 +32,22 @@ void CardConsolePresenter::Show(const std::vector<CardRenderData>& CardsData)
     constexpr int TotalCharsPerCard = 12;
     constexpr int TotalLineBreaks = 2;
 
-    std::string Result{};
-    Result.reserve(CardsData.size() * TotalCharsPerCard + TotalLineBreaks);
+    std::string Output{};
+    Output.reserve(CardsData.size() * TotalCharsPerCard + TotalLineBreaks);
 
     for (const CardRenderData& CardData : CardsData)
     {
-        Result += CardData.CardToRender.ToShortString() + "   ";
+        Output += CardData.CardToRender.ToShortString() + "   ";
     }
 
-    Result += "\n";
+    Output += "\n";
 
     for(size_t i = 0; i < CardsData.size(); i++)
     {
-        Result += " " + (CardsData[i].bCanBeUsed ? std::to_string(i) : " ") + "    ";
+        Output += " " + (CardsData[i].bCanBeUsed ? std::to_string(i) : " ") + "    ";
     }
 
-    Result += "\n";
+    Output += "\n";
 
-    std::cout << Result;
+    std::cout << Output;
 }
