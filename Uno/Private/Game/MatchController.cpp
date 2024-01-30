@@ -33,7 +33,11 @@ void MatchController::Start()
 
 void MatchController::Update()
 {
+    UIController.ShowCurrentTurn(*this, TurnController);
     UIController.ShowPlayerHand(*this, *TurnController.PeekCurrentPlayer());
+
+    TurnController.PlayTurn();
+    TurnController.PrepareNextTurn();
 
     std::cout << "\n[MatchController]Press something (-1 to exit)...";
     int input;
@@ -57,6 +61,11 @@ bool MatchController::CanUseCard(const Card& DesiredCard) const
     }
 
     return DesiredCard.CanStackOn(*CurrentCard);
+}
+
+const std::shared_ptr<Card> MatchController::PeekCurrentCard() const
+{
+    return Board.PeekCurrentCard();
 }
 
 void MatchController::Shutdown()

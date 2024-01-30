@@ -52,3 +52,13 @@ const std::shared_ptr<Player>& TurnController::PeekCurrentPlayer() const
 {
     return Players[CurrentPlayerIndex];
 }
+
+const std::vector<std::shared_ptr<Player>>& TurnController::GetOrderedPlayers() const
+{
+    return Players;
+}
+
+ETurnFlow TurnController::GetCurrentFlow() const
+{
+    return CurrentFlow;
+}

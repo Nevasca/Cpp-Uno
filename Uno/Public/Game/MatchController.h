@@ -20,6 +20,7 @@ public:
     void Update();
     bool IsMatchFinished() const;
     bool CanUseCard(const Card& Card) const override;
+    const std::shared_ptr<Card> PeekCurrentCard() const override;
     void Shutdown();
 
 private:

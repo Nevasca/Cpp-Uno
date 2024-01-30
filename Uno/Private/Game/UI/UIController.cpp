@@ -5,7 +5,12 @@
 #include "Public/Game/IMatchHandler.h"
 #include "Public/Game/Player.h"
 
-void UIController::ShowPlayerHand(const IMatchHandler& Match, const Player& Player)
+void UIController::ShowCurrentTurn(const IMatchHandler& MatchHandler, const ITurnHandler& TurnHandler)
+{
+    TurnPresenter.Show(MatchHandler, TurnHandler);
+}
+
+void UIController::ShowPlayerHand(const IMatchHandler& MatchHandler, const Player& Player)
 {
     std::cout << Player.GetName() << "'s hand:\n";
 
@@ -16,8 +21,10 @@ void UIController::ShowPlayerHand(const IMatchHandler& Match, const Player& Play
     
     for(const std::shared_ptr<Card>& Card : Cards)
     {
-        CardsData.emplace_back(*Card, Match.CanUseCard(*Card));
+        CardsData.emplace_back(*Card, MatchHandler.CanUseCard(*Card));
     }
     
     CardPresenter.Show(CardsData);
+
+    std::cout << "\n\n";
 }
