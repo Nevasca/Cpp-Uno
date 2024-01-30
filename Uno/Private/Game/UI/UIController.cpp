@@ -2,8 +2,14 @@
 
 #include <iostream>
 
+#include "Public/Core/ConsoleUtils.h"
 #include "Public/Game/IMatchHandler.h"
 #include "Public/Game/Player.h"
+
+void UIController::Clear()
+{
+    ConsoleUtils::Clear();
+}
 
 void UIController::ShowCurrentTurn(const IMatchHandler& MatchHandler, const ITurnHandler& TurnHandler)
 {

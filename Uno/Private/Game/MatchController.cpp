@@ -33,6 +33,7 @@ void MatchController::Start()
 
 void MatchController::Update()
 {
+    UIController.Clear();
     UIController.ShowCurrentTurn(*this, TurnController);
     UIController.ShowPlayerHand(*this, *TurnController.PeekCurrentPlayer());
     UIController.ShowAvailableCommands();
