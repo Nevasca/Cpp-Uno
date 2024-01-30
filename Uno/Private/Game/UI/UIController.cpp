@@ -28,3 +28,16 @@ void UIController::ShowPlayerHand(const IMatchHandler& MatchHandler, const Playe
 
     std::cout << "\n\n";
 }
+
+void UIController::ShowAvailableCommands()
+{
+    std::string Output{};
+
+    Output += "Available Commands:\n";
+    Output += "* Type a card number to use it;\n";
+    Output += "* (Debug) Type 'Q' to exit.\n";
+
+    Output += "\n\n";
+
+    std::cout << Output;
+}

@@ -12,6 +12,7 @@ public:
 
     void ShowCurrentTurn(const IMatchHandler& MatchHandler, const ITurnHandler& TurnHandler);
     void ShowPlayerHand(const IMatchHandler& MatchHandler, const Player& Player);
+    void ShowAvailableCommands();
 
 private:
 

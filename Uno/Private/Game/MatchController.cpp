@@ -35,15 +35,15 @@ void MatchController::Update()
 {
     UIController.ShowCurrentTurn(*this, TurnController);
     UIController.ShowPlayerHand(*this, *TurnController.PeekCurrentPlayer());
+    UIController.ShowAvailableCommands();
 
     TurnController.PlayTurn();
     TurnController.PrepareNextTurn();
 
-    std::cout << "\n[MatchController]Press something (-1 to exit)...";
-    int input;
+    char input;
     std::cin >> input;
 
-    bIsMatchFinished = input == -1;
+    bIsMatchFinished = input == 'Q' || input == 'q';
 }
 
 bool MatchController::IsMatchFinished() const
