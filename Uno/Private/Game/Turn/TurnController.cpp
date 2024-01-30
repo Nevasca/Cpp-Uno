@@ -1,13 +1,21 @@
 ﻿#include "Public/Game/Turn/TurnController.h"
 
-#include <assert.h>
+#include <algorithm>
+#include <cassert>
 
+#include "Public/Core/Random.h"
 #include "Public/Game/Player.h"
 
-TurnController::TurnController(const std::vector<std::shared_ptr<Player>>& InPlayers)
-    : Players(InPlayers)
+void TurnController::Initialize(const std::vector<std::shared_ptr<Player>>& InPlayers)
 {
     assert(!InPlayers.empty());
+
+    Players = InPlayers;
+}
+
+void TurnController::ShufflePlayers()
+{
+    std::shuffle(Players.begin(), Players.end(), Random::GetRandomEngine());
 }
 
 void TurnController::PlayTurn()
@@ -43,4 +51,14 @@ uint32_t TurnController::GetCurrentTurnIndex() const
 const std::shared_ptr<Player>& TurnController::PeekCurrentPlayer() const
 {
     return Players[CurrentPlayerIndex];
+}
+
+const std::vector<std::shared_ptr<Player>>& TurnController::GetOrderedPlayers() const
+{
+    return Players;
+}
+
+ETurnFlow TurnController::GetCurrentFlow() const
+{
+    return CurrentFlow;
 }

@@ -3,19 +3,23 @@
 #include <memory>
 #include <vector>
 
-#include "ETurnFlow.h"
+#include "Public/Game/ETurnFlow.h"
+#include "Public/Game/ITurnHandler.h"
 
 class Player;
 
-class TurnController
+class TurnController : public ITurnHandler
 {
 public:
 
-    TurnController(const std::vector<std::shared_ptr<Player>>& InPlayers);
+    void Initialize(const std::vector<std::shared_ptr<Player>>& InPlayers);
+    void ShufflePlayers();
     void PlayTurn();
     void PrepareNextTurn();
-    uint32_t GetCurrentTurnIndex() const;
-    const std::shared_ptr<Player>& PeekCurrentPlayer() const;
+    uint32_t GetCurrentTurnIndex() const override;
+    const std::shared_ptr<Player>& PeekCurrentPlayer() const override;
+    const std::vector<std::shared_ptr<Player>>& GetOrderedPlayers() const override;
+    ETurnFlow GetCurrentFlow() const override;
 
 private:
 

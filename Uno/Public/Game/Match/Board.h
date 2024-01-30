@@ -9,7 +9,7 @@ class Board
 public:
 
     void Stack(std::shared_ptr<Card>&& Card);
-    const Card& PeekCurrentCard() const;
+    std::shared_ptr<Card> PeekCurrentCard() const;
     
 private:
     std::vector<std::shared_ptr<Card>> TossedCards{};
