@@ -59,6 +59,26 @@ bool MatchController::CanUseCard(const Card& DesiredCard) const
     return DesiredCard.CanStackOn(*CurrentCard);
 }
 
+bool MatchController::CanUseAnyCard(const std::vector<std::shared_ptr<Card>>& Cards) const
+{
+    const std::shared_ptr<Card> CurrentCard = Board.PeekCurrentCard();
+
+    if(!CurrentCard)
+    {
+        return true;
+    }
+
+    for(const std::shared_ptr<Card>& Card : Cards)
+    {
+        if(Card->CanStackOn(*CurrentCard))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void MatchController::UseCard(std::shared_ptr<Card>&& Card)
 {
     UIController.ShowUsedCard(*Card, *TurnController.PeekCurrentPlayer());

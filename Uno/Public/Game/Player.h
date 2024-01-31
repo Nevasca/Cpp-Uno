@@ -18,7 +18,6 @@ public:
     void GiveCard(std::shared_ptr<Card>&& Card);
     size_t GetTotalCards() const;
     const std::vector<std::shared_ptr<Card>>& GetCards() const;
-    bool HasCardToStackOn(const Card& OtherCard) const;
     virtual ~Player() = default;
     
     NO_COPY_MOVE(Player)

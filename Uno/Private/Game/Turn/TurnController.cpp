@@ -23,22 +23,10 @@ void TurnController::PlayTurn(IMatchHandler& MatchHandler)
 {
     std::shared_ptr<Player>& CurrentPlayer = Players[CurrentPlayerIndex];
     
-    if(HasCardToUse(MatchHandler, *CurrentPlayer))
+    if(MatchHandler.CanUseAnyCard(CurrentPlayer->GetCards()))
     {
         CurrentPlayer->PlayTurn(MatchHandler);
     }
-}
-
-bool TurnController::HasCardToUse(const IMatchHandler& MathHandler, const Player& Player)
-{
-    const std::shared_ptr<Card> CurrentCard = MathHandler.PeekCurrentCard();
-
-    if(CurrentCard)
-    {
-        return Player.HasCardToStackOn(*CurrentCard);
-    }
-
-    return true;
 }
 
 void TurnController::PrepareNextTurn()

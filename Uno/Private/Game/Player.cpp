@@ -1,7 +1,5 @@
 ﻿#include "Public/Game/Player.h"
 
-#include "Public/Game/Card.h"
-
 Player::Player(std::string&& InName)
     : Name(std::move(InName))
 { }
@@ -30,17 +28,4 @@ size_t Player::GetTotalCards() const
 const std::vector<std::shared_ptr<Card>>& Player::GetCards() const
 {
     return Cards;
-}
-
-bool Player::HasCardToStackOn(const Card& OtherCard) const
-{
-    for(const std::shared_ptr<Card>& Card : Cards)
-    {
-        if(Card->CanStackOn(OtherCard))
-        {
-            return true;
-        }
-    }
-
-    return false;
 }

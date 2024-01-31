@@ -30,5 +30,4 @@ private:
     std::vector<std::shared_ptr<Player>> Players{};
 
     void SetNextPlayerIndex();
-    bool HasCardToUse(const IMatchHandler& MathHandler, const Player& Player);
 };
