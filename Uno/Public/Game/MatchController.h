@@ -22,11 +22,14 @@ public:
     bool CanUseCard(const Card& Card) const override;
     bool CanUseAnyCard(const std::vector<std::shared_ptr<Card>>& Cards) const override;
     void UseCard(std::shared_ptr<Card>&& Card) override;
+    void HandleNoUsableCard(Player& Player) override;
     const std::shared_ptr<Card> PeekCurrentCard() const override;
     void Shutdown();
 
 private:
 
+    static constexpr uint16_t TOTAL_BUY_CARDS_PENALTY = 1;
+    
     std::vector<std::shared_ptr<Player>> Players{};
     bool bIsInitialized{false};
     bool bIsMatchFinished{false};

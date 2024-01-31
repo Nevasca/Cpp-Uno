@@ -60,3 +60,18 @@ void UIController::ShowUsedCard(const Card& Card, const Player& Player)
 
     ConsoleUtils::Delay(SHOW_USED_CARD_MILLISECONDS_DELAY, true);
 }
+
+void UIController::ShowNoCardsPenalty(const Player& Player, const std::vector<std::shared_ptr<Card>>& PenaltyCards)
+{
+    std::string Output{};
+
+    Output += Player.GetName() + " has no valid card to use on this turn.\n";
+    Output += "Received a penalty of buying " + std::to_string(PenaltyCards.size()) + " new card(s):\n";
+    std::cout << Output;
+
+    CardPresenter.Show(PenaltyCards);
+
+    std::cout << "\n\n";
+
+    ConsoleUtils::Delay(SHOW_NO_CARDS_PENALTY_MILLISECONDS_DELAY, true);
+}

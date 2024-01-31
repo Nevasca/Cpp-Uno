@@ -27,6 +27,10 @@ void TurnController::PlayTurn(IMatchHandler& MatchHandler)
     {
         CurrentPlayer->PlayTurn(MatchHandler);
     }
+    else
+    {
+        MatchHandler.HandleNoUsableCard(*CurrentPlayer);
+    }
 }
 
 void TurnController::PrepareNextTurn()

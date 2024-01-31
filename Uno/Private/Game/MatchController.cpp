@@ -86,6 +86,24 @@ void MatchController::UseCard(std::shared_ptr<Card>&& Card)
     Board.Stack(std::move(Card));
 }
 
+void MatchController::HandleNoUsableCard(Player& Player)
+{
+    std::vector<std::shared_ptr<Card>> PenaltyCards{};
+    PenaltyCards.reserve(TOTAL_BUY_CARDS_PENALTY);
+    
+    for(int i = 0; i < TOTAL_BUY_CARDS_PENALTY; i++)
+    {
+        PenaltyCards.emplace_back(DeckController.BuyCard());    
+    }
+
+    UIController.ShowNoCardsPenalty(Player, PenaltyCards);
+
+    for(std::shared_ptr<Card>& Card : PenaltyCards)
+    {
+        Player.GiveCard(std::move(Card));
+    }
+}
+
 const std::shared_ptr<Card> MatchController::PeekCurrentCard() const
 {
     return Board.PeekCurrentCard();
