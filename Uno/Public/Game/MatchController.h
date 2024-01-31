@@ -21,6 +21,7 @@ public:
     bool IsMatchFinished() const;
     bool CanUseCard(const Card& Card) const override;
     bool CanUseAnyCard(const std::vector<std::shared_ptr<Card>>& Cards) const override;
+    bool TryUsingCard(Player& Player, int CardIndex) override;
     void UseCard(std::shared_ptr<Card>&& Card) override;
     void HandleNoUsableCard(Player& Player) override;
     const std::shared_ptr<Card> PeekCurrentCard() const override;

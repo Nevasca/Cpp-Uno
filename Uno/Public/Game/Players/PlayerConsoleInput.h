@@ -5,11 +5,11 @@ public:
 
     void Process();
     int GetSelectedCardIndex() const;
-    bool HasSelectedCard() const;
+    bool HasSelectedACard() const;
 
 private:
 
-    bool bHasSelectedCard{false};
+    bool bHasSelectedACard{false};
     int SelectedCardIndex{-1};
 
     void ClearInput();

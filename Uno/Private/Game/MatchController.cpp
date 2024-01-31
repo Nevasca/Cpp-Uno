@@ -79,6 +79,25 @@ bool MatchController::CanUseAnyCard(const std::vector<std::shared_ptr<Card>>& Ca
     return false;
 }
 
+bool MatchController::TryUsingCard(Player& Player, int CardIndex)
+{
+    if(CardIndex < 0 || CardIndex >= static_cast<int>(Player.GetTotalCards()))
+    {
+        UIController.ShowInvalidCardWarning();
+        return false;
+    }
+
+    if(CanUseCard(Player.PeekCard(CardIndex)))
+    {
+        UseCard(Player.TakeCard(CardIndex));
+        return true;
+    }
+
+    UIController.ShowCantUseCardWarning();
+
+    return false;
+}
+
 void MatchController::UseCard(std::shared_ptr<Card>&& Card)
 {
     UIController.ShowUsedCard(*Card, *TurnController.PeekCurrentPlayer());

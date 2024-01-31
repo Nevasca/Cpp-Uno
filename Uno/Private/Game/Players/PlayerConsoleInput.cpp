@@ -10,14 +10,14 @@ void PlayerConsoleInput::Process()
 
     if(RawInput >= 0)
     {
-        bHasSelectedCard = true;
+        bHasSelectedACard = true;
         SelectedCardIndex = RawInput;
     }
 }
 
-bool PlayerConsoleInput::HasSelectedCard() const
+bool PlayerConsoleInput::HasSelectedACard() const
 {
-    return bHasSelectedCard;
+    return bHasSelectedACard;
 }
 
 int PlayerConsoleInput::GetSelectedCardIndex() const
@@ -27,6 +27,6 @@ int PlayerConsoleInput::GetSelectedCardIndex() const
 
 void PlayerConsoleInput::ClearInput()
 {
-    bHasSelectedCard = false;
+    bHasSelectedACard = false;
     SelectedCardIndex = -1;
 }

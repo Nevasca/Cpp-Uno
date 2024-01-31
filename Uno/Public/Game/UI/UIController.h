@@ -16,6 +16,8 @@ public:
     void ShowAvailableCommands();
     void ShowUsedCard(const Card& Card, const Player& Player);
     void ShowNoCardsPenalty(const Player& Player, const std::vector<std::shared_ptr<Card>>& PenaltyCards);
+    void ShowInvalidCardWarning();
+    void ShowCantUseCardWarning();
 
 private:
 

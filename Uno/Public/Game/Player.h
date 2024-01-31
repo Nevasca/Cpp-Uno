@@ -18,6 +18,8 @@ public:
     void GiveCard(std::shared_ptr<Card>&& Card);
     size_t GetTotalCards() const;
     const std::vector<std::shared_ptr<Card>>& GetCards() const;
+    const Card& PeekCard(int CardIndex) const;
+    std::shared_ptr<Card> TakeCard(int CardIndex);
     virtual ~Player() = default;
     
     NO_COPY_MOVE(Player)

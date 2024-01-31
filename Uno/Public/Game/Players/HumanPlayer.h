@@ -13,8 +13,4 @@ public:
 private:
 
     PlayerConsoleInput Input{};
-
-    bool IsCardChoiceValid(const IMatchHandler& MatchHandler, int CardIndex) const;
-    std::shared_ptr<Card> TakeCard(int CardIndex);
-    void UseCard(IMatchHandler& MatchHandler, int CardIndex);
 };

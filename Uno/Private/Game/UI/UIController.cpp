@@ -75,3 +75,13 @@ void UIController::ShowNoCardsPenalty(const Player& Player, const std::vector<st
 
     ConsoleUtils::Delay(SHOW_NO_CARDS_PENALTY_MILLISECONDS_DELAY, true);
 }
+
+void UIController::ShowInvalidCardWarning()
+{
+    std::cout << "Please enter a valid card\n";
+}
+
+void UIController::ShowCantUseCardWarning()
+{
+    std::cout << "This card can't be used right now, please enter another one\n";
+}

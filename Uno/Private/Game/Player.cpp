@@ -29,3 +29,16 @@ const std::vector<std::shared_ptr<Card>>& Player::GetCards() const
 {
     return Cards;
 }
+
+const Card& Player::PeekCard(int CardIndex) const
+{
+    return *Cards[CardIndex];
+}
+
+std::shared_ptr<Card> Player::TakeCard(int CardIndex)
+{
+    std::shared_ptr<Card> Card = Cards[CardIndex];
+    Cards.erase(Cards.begin() + CardIndex);
+
+    return Card;
+}
