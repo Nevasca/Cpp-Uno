@@ -18,7 +18,7 @@ public:
 
 private:
 
-    constexpr int SHOW_USED_CARD_MILLISECONDS_DELAY = 1000;
+    static constexpr int SHOW_USED_CARD_MILLISECONDS_DELAY = 1000;
     
     CardConsolePresenter CardPresenter{};
     TurnConsolePresenter TurnPresenter{};
