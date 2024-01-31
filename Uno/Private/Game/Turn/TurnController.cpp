@@ -4,6 +4,7 @@
 #include <cassert>
 
 #include "Public/Core/Random.h"
+#include "Public/Game/IMatchHandler.h"
 #include "Public/Game/Player.h"
 
 void TurnController::Initialize(const std::vector<std::shared_ptr<Player>>& InPlayers)
@@ -20,7 +21,24 @@ void TurnController::ShufflePlayers()
 
 void TurnController::PlayTurn(IMatchHandler& MatchHandler)
 {
-    Players[CurrentPlayerIndex]->PlayTurn(MatchHandler);
+    std::shared_ptr<Player>& CurrentPlayer = Players[CurrentPlayerIndex];
+    
+    if(HasCardToUse(MatchHandler, *CurrentPlayer))
+    {
+        CurrentPlayer->PlayTurn(MatchHandler);
+    }
+}
+
+bool TurnController::HasCardToUse(const IMatchHandler& MathHandler, const Player& Player)
+{
+    const std::shared_ptr<Card> CurrentCard = MathHandler.PeekCurrentCard();
+
+    if(CurrentCard)
+    {
+        return Player.HasCardToStackOn(*CurrentCard);
+    }
+
+    return true;
 }
 
 void TurnController::PrepareNextTurn()
