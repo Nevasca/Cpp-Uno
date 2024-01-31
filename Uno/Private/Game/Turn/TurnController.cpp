@@ -18,9 +18,9 @@ void TurnController::ShufflePlayers()
     std::shuffle(Players.begin(), Players.end(), Random::GetRandomEngine());
 }
 
-void TurnController::PlayTurn()
+void TurnController::PlayTurn(IMatchHandler& MatchHandler)
 {
-    Players[CurrentPlayerIndex]->PlayTurn();
+    Players[CurrentPlayerIndex]->PlayTurn(MatchHandler);
 }
 
 void TurnController::PrepareNextTurn()

@@ -6,7 +6,7 @@ void PlayerConsoleInput::Process()
 {
     ClearInput();
     
-    int RawInput = ConsoleUtils::GetInput<int>();
+    const int RawInput = ConsoleUtils::GetInput<int>();
 
     if(RawInput >= 0)
     {

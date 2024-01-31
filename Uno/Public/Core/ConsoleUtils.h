@@ -6,6 +6,9 @@ class ConsoleUtils
 public:
 
     static void Clear();
+    static void Delay(const long long& Milliseconds);
+    static void Delay(const long long& Milliseconds, bool bToggleCursor);
+    static void ToggleCursor(bool bIsVisible);
 
     template <typename TInput>
     static TInput GetInput()

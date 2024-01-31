@@ -38,13 +38,8 @@ void MatchController::Update()
     UIController.ShowPlayerHand(*this, *TurnController.PeekCurrentPlayer());
     UIController.ShowAvailableCommands();
 
-    TurnController.PlayTurn();
+    TurnController.PlayTurn(*this);
     TurnController.PrepareNextTurn();
-
-    char input;
-    std::cin >> input;
-
-    bIsMatchFinished = input == 'Q' || input == 'q';
 }
 
 bool MatchController::IsMatchFinished() const
@@ -62,6 +57,13 @@ bool MatchController::CanUseCard(const Card& DesiredCard) const
     }
 
     return DesiredCard.CanStackOn(*CurrentCard);
+}
+
+void MatchController::UseCard(std::shared_ptr<Card>&& Card)
+{
+    UIController.ShowUsedCard(*Card, *TurnController.PeekCurrentPlayer());
+    
+    Board.Stack(std::move(Card));
 }
 
 const std::shared_ptr<Card> MatchController::PeekCurrentCard() const

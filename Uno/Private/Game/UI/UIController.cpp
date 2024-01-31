@@ -41,9 +41,22 @@ void UIController::ShowAvailableCommands()
 
     Output += "Available Commands:\n";
     Output += "* Type a card number to use it;\n";
-    Output += "* (Debug) Type 'Q' to exit.\n";
 
     Output += "\n\n";
 
     std::cout << Output;
+}
+
+void UIController::ShowUsedCard(const Card& Card, const Player& Player)
+{
+    std::string Output{};
+
+    Output += Player.GetName() + " has used the card:\n";
+    std::cout << Output;
+
+    CardPresenter.Show(Card);
+
+    std::cout << "\n\n";
+
+    ConsoleUtils::Delay(SHOW_USED_CARD_MILLISECONDS_DELAY, true);
 }
