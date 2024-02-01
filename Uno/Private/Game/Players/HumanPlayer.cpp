@@ -10,16 +10,20 @@ HumanPlayer::HumanPlayer(std::string&& InName)
 
 void HumanPlayer::PlayTurn(IMatchHandler& MatchHandler)
 {
-    bool bHasMadeValidInput = false;
+    bool bHasFinishedTurn = false;
 
     do
     {
         Input.Process();
 
-        if(Input.HasSelectedACard() && MatchHandler.TryUsingCard(*this, Input.GetSelectedCardIndex()))
+        if(Input.HasYelledUno())
         {
-            bHasMadeValidInput = true;
+            MatchHandler.TryYellUno(*this);
+        }
+        else if(Input.HasSelectedACard())
+        {
+            bHasFinishedTurn = MatchHandler.TryUsingCard(*this, Input.GetSelectedCardIndex());
         }
     }
-    while (!bHasMadeValidInput);
+    while (!bHasFinishedTurn);
 }

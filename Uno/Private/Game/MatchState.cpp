@@ -1,5 +1,9 @@
 ﻿#include "Public/Game/MatchState.h"
+
+#include <memory>
+
 #include "Public/Core/StateMachine.h"
+#include "Public/Game/MatchFinishedState.h"
 
 void MatchState::Enter()
 {
@@ -9,12 +13,15 @@ void MatchState::Enter()
 
 void MatchState::Update(StateMachine& StateMachine)
 {
-    MatchController.Update();
-
     if(MatchController.IsMatchFinished())
     {
-        StateMachine.Stop();
+        std::shared_ptr<MatchFinishedState> FinishedState = std::make_shared<MatchFinishedState>(MatchController.GetWinner());
+        StateMachine.AddState(std::move(FinishedState), true);
+        
+        return;
     }
+    
+    MatchController.Update();
 }
 
 void MatchState::Exit()

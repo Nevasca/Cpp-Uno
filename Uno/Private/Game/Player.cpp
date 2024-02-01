@@ -42,3 +42,13 @@ std::shared_ptr<Card> Player::TakeCard(int CardIndex)
 
     return Card;
 }
+
+bool Player::HasYelledUno() const
+{
+    return bHasYelledUno;
+}
+
+void Player::SetHasYelledUno(bool bInHasYelledUno)
+{
+    bHasYelledUno = bInHasYelledUno;
+}

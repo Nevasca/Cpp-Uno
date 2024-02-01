@@ -41,6 +41,7 @@ void UIController::ShowAvailableCommands()
 
     Output += "Available Commands:\n";
     Output += "* Type a card number to use it;\n";
+    Output += "* Type -2 to yell Uno!\n";
 
     Output += "\n\n";
 
@@ -84,4 +85,36 @@ void UIController::ShowInvalidCardWarning()
 void UIController::ShowCantUseCardWarning()
 {
     std::cout << "This card can't be used right now, please enter another one\n";
+}
+
+void UIController::ShowMinCardsForUnoWarning(uint8_t MinCardsRequired)
+{
+    std::string Output = "You need " + std::to_string(MinCardsRequired) + " cards to yell Uno!\n";
+    
+    std::cout << Output;
+}
+
+void UIController::ShowAlreadyYelledUnoWarning()
+{
+    std::cout << "You've already yelled Uno!\n\n";
+}
+
+void UIController::ShowUnoYell()
+{
+    std::cout << "\n\nUNO!!\n\n";
+}
+
+void UIController::ShowUnoNotYelledPenalty(const Player& Player, const std::vector<std::shared_ptr<Card>>& PenaltyCards)
+{
+    std::string Output{};
+
+    Output += Player.GetName() + " has not yelled UNO.\n";
+    Output += "Received a penalty of buying " + std::to_string(PenaltyCards.size()) + " new card(s):\n";
+    std::cout << Output;
+
+    CardPresenter.Show(PenaltyCards);
+
+    std::cout << "\n\n";
+
+    ConsoleUtils::Delay(SHOW_UNO_NOT_YELLED_PENALTY_MILLISECONDS_DELAY, true);
 }

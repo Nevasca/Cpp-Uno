@@ -5,6 +5,10 @@
 #include "Public/Game/Card.h"
 #include "Public/Game/Players/HumanPlayer.h"
 
+MatchController::MatchController()
+    : DeckController(Board)
+{ }
+
 void MatchController::Initialize()
 {
     if(bIsInitialized)
@@ -33,13 +37,23 @@ void MatchController::Start()
 
 void MatchController::Update()
 {
+    const std::shared_ptr<Player> CurrentPlayer = TurnController.PeekCurrentPlayer();
+
     UIController.Clear();
     UIController.ShowCurrentTurn(*this, TurnController);
-    UIController.ShowPlayerHand(*this, *TurnController.PeekCurrentPlayer());
+    UIController.ShowPlayerHand(*this, *CurrentPlayer);
     UIController.ShowAvailableCommands();
 
     TurnController.PlayTurn(*this);
-    TurnController.PrepareNextTurn();
+
+    if(HasPlayerWon(*CurrentPlayer))
+    {
+        FinishMatchWithWinner(CurrentPlayer);
+    }
+    else
+    {
+        TurnController.PrepareNextTurn();
+    }
 }
 
 bool MatchController::IsMatchFinished() const
@@ -98,6 +112,23 @@ bool MatchController::TryUsingCard(Player& Player, int CardIndex)
     return false;
 }
 
+bool MatchController::TryApplyPenalties(Player& Player)
+{
+    if(!CanUseAnyCard(Player.GetCards()))
+    {
+        ApplyNoUsableCardPenalty(Player);
+        return true;
+    }
+
+    if(CanApplyUnoPenalty(Player))
+    {
+        ApplyUnoNotYelledPenalty(Player);
+        return true;
+    }
+    
+    return false;
+}
+
 void MatchController::UseCard(std::shared_ptr<Card>&& Card)
 {
     UIController.ShowUsedCard(*Card, *TurnController.PeekCurrentPlayer());
@@ -105,7 +136,7 @@ void MatchController::UseCard(std::shared_ptr<Card>&& Card)
     Board.Stack(std::move(Card));
 }
 
-void MatchController::HandleNoUsableCard(Player& Player)
+void MatchController::ApplyNoUsableCardPenalty(Player& Player)
 {
     std::vector<std::shared_ptr<Card>> PenaltyCards{};
     PenaltyCards.reserve(TOTAL_BUY_CARDS_PENALTY);
@@ -115,6 +146,8 @@ void MatchController::HandleNoUsableCard(Player& Player)
         PenaltyCards.emplace_back(DeckController.BuyCard());    
     }
 
+    Player.SetHasYelledUno(false);
+
     UIController.ShowNoCardsPenalty(Player, PenaltyCards);
 
     for(std::shared_ptr<Card>& Card : PenaltyCards)
@@ -123,9 +156,68 @@ void MatchController::HandleNoUsableCard(Player& Player)
     }
 }
 
+bool MatchController::TryYellUno(Player& Player)
+{
+    if(Player.GetTotalCards() > MIN_CARDS_TO_YELL_UNO)
+    {
+        UIController.ShowMinCardsForUnoWarning(MIN_CARDS_TO_YELL_UNO);
+        return false;
+    }
+
+    if(Player.HasYelledUno())
+    {
+        UIController.ShowAlreadyYelledUnoWarning();
+        return false;
+    }
+
+    Player.SetHasYelledUno(true);
+
+    UIController.ShowUnoYell();
+    return true;
+}
+
+bool MatchController::CanApplyUnoPenalty(const Player& Player) const
+{
+    return Player.GetTotalCards() == REQUIRED_CARDS_UNO_PENALTY && !Player.HasYelledUno();
+}
+
+void MatchController::ApplyUnoNotYelledPenalty(Player& Player)
+{
+    std::vector<std::shared_ptr<Card>> PenaltyCards{};
+    PenaltyCards.reserve(TOTAL_BUY_CARDS_UNO_PENALTY);
+    
+    for(int i = 0; i < TOTAL_BUY_CARDS_UNO_PENALTY; i++)
+    {
+        PenaltyCards.emplace_back(DeckController.BuyCard());    
+    }
+
+    UIController.ShowUnoNotYelledPenalty(Player, PenaltyCards);
+
+    for(std::shared_ptr<Card>& Card : PenaltyCards)
+    {
+        Player.GiveCard(std::move(Card));
+    }
+}
+
+bool MatchController::HasPlayerWon(const Player& Player) const
+{
+    return Player.GetTotalCards() == 0;
+}
+
+void MatchController::FinishMatchWithWinner(const std::shared_ptr<Player>& InWinner)
+{
+    Winner = InWinner;
+    bIsMatchFinished = true;
+}
+
 const std::shared_ptr<Card> MatchController::PeekCurrentCard() const
 {
     return Board.PeekCurrentCard();
+}
+
+const std::shared_ptr<Player>& MatchController::GetWinner() const
+{
+    return Winner;
 }
 
 void MatchController::Shutdown()
@@ -134,6 +226,8 @@ void MatchController::Shutdown()
     {
         return;
     }
+
+    UIController.Clear();
 }
 
 void MatchController::CreateDebugPlayers()
