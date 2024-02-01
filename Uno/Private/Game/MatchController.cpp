@@ -33,17 +33,13 @@ void MatchController::Start()
 
 void MatchController::Update()
 {
+    UIController.Clear();
     UIController.ShowCurrentTurn(*this, TurnController);
     UIController.ShowPlayerHand(*this, *TurnController.PeekCurrentPlayer());
     UIController.ShowAvailableCommands();
 
-    TurnController.PlayTurn();
+    TurnController.PlayTurn(*this);
     TurnController.PrepareNextTurn();
-
-    char input;
-    std::cin >> input;
-
-    bIsMatchFinished = input == 'Q' || input == 'q';
 }
 
 bool MatchController::IsMatchFinished() const
@@ -61,6 +57,70 @@ bool MatchController::CanUseCard(const Card& DesiredCard) const
     }
 
     return DesiredCard.CanStackOn(*CurrentCard);
+}
+
+bool MatchController::CanUseAnyCard(const std::vector<std::shared_ptr<Card>>& Cards) const
+{
+    const std::shared_ptr<Card> CurrentCard = Board.PeekCurrentCard();
+
+    if(!CurrentCard)
+    {
+        return true;
+    }
+
+    for(const std::shared_ptr<Card>& Card : Cards)
+    {
+        if(Card->CanStackOn(*CurrentCard))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool MatchController::TryUsingCard(Player& Player, int CardIndex)
+{
+    if(CardIndex < 0 || CardIndex >= static_cast<int>(Player.GetTotalCards()))
+    {
+        UIController.ShowInvalidCardWarning();
+        return false;
+    }
+
+    if(CanUseCard(Player.PeekCard(CardIndex)))
+    {
+        UseCard(Player.TakeCard(CardIndex));
+        return true;
+    }
+
+    UIController.ShowCantUseCardWarning();
+
+    return false;
+}
+
+void MatchController::UseCard(std::shared_ptr<Card>&& Card)
+{
+    UIController.ShowUsedCard(*Card, *TurnController.PeekCurrentPlayer());
+    
+    Board.Stack(std::move(Card));
+}
+
+void MatchController::HandleNoUsableCard(Player& Player)
+{
+    std::vector<std::shared_ptr<Card>> PenaltyCards{};
+    PenaltyCards.reserve(TOTAL_BUY_CARDS_PENALTY);
+    
+    for(int i = 0; i < TOTAL_BUY_CARDS_PENALTY; i++)
+    {
+        PenaltyCards.emplace_back(DeckController.BuyCard());    
+    }
+
+    UIController.ShowNoCardsPenalty(Player, PenaltyCards);
+
+    for(std::shared_ptr<Card>& Card : PenaltyCards)
+    {
+        Player.GiveCard(std::move(Card));
+    }
 }
 
 const std::shared_ptr<Card> MatchController::PeekCurrentCard() const

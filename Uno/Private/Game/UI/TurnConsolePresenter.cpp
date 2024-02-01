@@ -53,12 +53,15 @@ void TurnConsolePresenter::ShowCurrentCard(const IMatchHandler& MatchHandler)
 {
     const std::shared_ptr<Card> CurrentCard = MatchHandler.PeekCurrentCard();
 
-    if(!CurrentCard)
+    if(CurrentCard)
     {
-        return;
+        std::cout << "Current card:\n";
+        CardPresenter.Show(*CurrentCard);
+    }
+    else
+    {
+        std::cout << "No card on the table yet.\n";
     }
     
-    std::cout << "Current card:\n";
-    CardPresenter.Show(*CurrentCard);
     std::cout << "\n\n";
 }

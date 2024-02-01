@@ -4,6 +4,7 @@
 #include <cassert>
 
 #include "Public/Core/Random.h"
+#include "Public/Game/IMatchHandler.h"
 #include "Public/Game/Player.h"
 
 void TurnController::Initialize(const std::vector<std::shared_ptr<Player>>& InPlayers)
@@ -18,9 +19,18 @@ void TurnController::ShufflePlayers()
     std::shuffle(Players.begin(), Players.end(), Random::GetRandomEngine());
 }
 
-void TurnController::PlayTurn()
+void TurnController::PlayTurn(IMatchHandler& MatchHandler)
 {
-    Players[CurrentPlayerIndex]->PlayTurn();
+    std::shared_ptr<Player>& CurrentPlayer = Players[CurrentPlayerIndex];
+    
+    if(MatchHandler.CanUseAnyCard(CurrentPlayer->GetCards()))
+    {
+        CurrentPlayer->PlayTurn(MatchHandler);
+    }
+    else
+    {
+        MatchHandler.HandleNoUsableCard(*CurrentPlayer);
+    }
 }
 
 void TurnController::PrepareNextTurn()

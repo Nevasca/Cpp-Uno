@@ -6,6 +6,7 @@
 #include "Public/Game/ETurnFlow.h"
 #include "Public/Game/ITurnHandler.h"
 
+class IMatchHandler;
 class Player;
 
 class TurnController : public ITurnHandler
@@ -14,7 +15,7 @@ public:
 
     void Initialize(const std::vector<std::shared_ptr<Player>>& InPlayers);
     void ShufflePlayers();
-    void PlayTurn();
+    void PlayTurn(IMatchHandler& MatchHandler);
     void PrepareNextTurn();
     uint32_t GetCurrentTurnIndex() const override;
     const std::shared_ptr<Player>& PeekCurrentPlayer() const override;

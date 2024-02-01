@@ -2,8 +2,14 @@
 
 #include <iostream>
 
+#include "Public/Core/ConsoleUtils.h"
 #include "Public/Game/IMatchHandler.h"
 #include "Public/Game/Player.h"
+
+void UIController::Clear()
+{
+    ConsoleUtils::Clear();
+}
 
 void UIController::ShowCurrentTurn(const IMatchHandler& MatchHandler, const ITurnHandler& TurnHandler)
 {
@@ -35,9 +41,47 @@ void UIController::ShowAvailableCommands()
 
     Output += "Available Commands:\n";
     Output += "* Type a card number to use it;\n";
-    Output += "* (Debug) Type 'Q' to exit.\n";
 
     Output += "\n\n";
 
     std::cout << Output;
+}
+
+void UIController::ShowUsedCard(const Card& Card, const Player& Player)
+{
+    std::string Output{};
+
+    Output += Player.GetName() + " has used the card:\n";
+    std::cout << Output;
+
+    CardPresenter.Show(Card);
+
+    std::cout << "\n\n";
+
+    ConsoleUtils::Delay(SHOW_USED_CARD_MILLISECONDS_DELAY, true);
+}
+
+void UIController::ShowNoCardsPenalty(const Player& Player, const std::vector<std::shared_ptr<Card>>& PenaltyCards)
+{
+    std::string Output{};
+
+    Output += Player.GetName() + " has no valid card to use on this turn.\n";
+    Output += "Received a penalty of buying " + std::to_string(PenaltyCards.size()) + " new card(s):\n";
+    std::cout << Output;
+
+    CardPresenter.Show(PenaltyCards);
+
+    std::cout << "\n\n";
+
+    ConsoleUtils::Delay(SHOW_NO_CARDS_PENALTY_MILLISECONDS_DELAY, true);
+}
+
+void UIController::ShowInvalidCardWarning()
+{
+    std::cout << "Please enter a valid card\n";
+}
+
+void UIController::ShowCantUseCardWarning()
+{
+    std::cout << "This card can't be used right now, please enter another one\n";
 }
