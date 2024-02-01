@@ -1,7 +1,5 @@
 ﻿#include "Public/Core/StateMachine.h"
 
-#include "Public/Core/IState.h"
-
 StateMachine::StateMachine(std::vector<std::shared_ptr<IState>>&& InStates)
     : States(std::move(InStates))
 { }
@@ -29,13 +27,13 @@ void StateMachine::Stop()
     CurrentState = nullptr;
 }
 
-void StateMachine::SetState(std::shared_ptr<IState>&& State)
+void StateMachine::SetState(const std::shared_ptr<IState>& State)
 {
     if(CurrentState)
     {
         CurrentState->Exit();
     }
 
-    CurrentState = std::move(State);
+    CurrentState = State;
     CurrentState->Enter();
 }

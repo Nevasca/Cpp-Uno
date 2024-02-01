@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-class IState;
+#include "IState.h"
 
 class StateMachine
 {
@@ -14,7 +14,7 @@ public:
     void Update();
     bool IsRunning() const;
     void Stop();
-    void SetState(std::shared_ptr<IState>&& State);
+    void SetState(const std::shared_ptr<IState>& State);
 
     template <typename TState, typename = std::enable_if_t<std::is_base_of_v<IState, TState>>>
     void SetState()
@@ -22,7 +22,19 @@ public:
         std::shared_ptr<TState> DesiredState = GetState<TState>();
 
         assert(DesiredState);
-        SetState(std::move(DesiredState));
+        SetState(DesiredState);
+    }
+
+    template<typename TState, typename = std::enable_if<std::is_base_of_v<IState, TState>>>
+    void AddState(std::shared_ptr<TState>&& InState, bool bSetAsCurrent)
+    {
+        RemoveState<TState>();
+        States.emplace_back(InState);
+
+        if(bSetAsCurrent)
+        {
+            SetState(States.back());
+        }
     }
 
 private:
@@ -44,5 +56,34 @@ private:
         }
         
         return nullptr;
+    }
+
+    template <typename TState, typename = std::enable_if_t<std::is_base_of_v<IState, TState>>>
+    void RemoveState()
+    {
+        int ExistingStateIndex = -1;
+
+        for(int i = 0; i < States.size(); i++)
+        {
+            std::shared_ptr<TState> CastedState = std::dynamic_pointer_cast<TState>(States[i]);
+
+            if(CastedState)
+            {
+                ExistingStateIndex = i;
+            }
+        }
+
+        if(ExistingStateIndex <= -1)
+        {
+            return;
+        }
+        
+        if(CurrentState == States[ExistingStateIndex])
+        {
+            CurrentState->Exit();
+            CurrentState = nullptr;
+        }
+            
+        States.erase(States.begin() + ExistingStateIndex);
     }
 };

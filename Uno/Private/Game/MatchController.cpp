@@ -207,10 +207,6 @@ bool MatchController::HasPlayerWon(const Player& Player) const
 void MatchController::FinishMatchWithWinner(const std::shared_ptr<Player>& InWinner)
 {
     Winner = InWinner;
-
-    UIController.Clear();
-    UIController.ShowWinner(*Winner);
-
     bIsMatchFinished = true;
 }
 
@@ -230,6 +226,8 @@ void MatchController::Shutdown()
     {
         return;
     }
+
+    UIController.Clear();
 }
 
 void MatchController::CreateDebugPlayers()
