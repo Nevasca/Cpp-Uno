@@ -10,9 +10,9 @@ DeckController::DeckController(IHasCard& InSpareDeck)
     : SpareDeck(InSpareDeck)
 { }
 
-void DeckController::Initialize()
+void DeckController::Initialize(ITurnActionHandler& TurnActionHandler)
 {
-    CreateDeck();
+    CreateDeck(TurnActionHandler);
 }
 
 void DeckController::ShuffleCards()
@@ -35,17 +35,25 @@ std::shared_ptr<Card> DeckController::BuyCard()
     return Card;
 }
 
-void DeckController::CreateDeck()
+void DeckController::CreateDeck(ITurnActionHandler& TurnActionHandler)
 {
-    constexpr int TotalCards = 40;  
+    constexpr int TotalCards = 48;  
     Cards.reserve(TotalCards);
-    
+
     for (uint16_t i = 0; i < 10; i++)
     {
-        Cards.push_back(CardFactory::CreateNumberCard(EColor::Blue, i));
-        Cards.push_back(CardFactory::CreateNumberCard(EColor::Red, i));
-        Cards.push_back(CardFactory::CreateNumberCard(EColor::Green, i));
-        Cards.push_back(CardFactory::CreateNumberCard(EColor::Yellow, i));
+        Cards.emplace_back(CardFactory::CreateNumberCard(EColor::Blue, i));
+        Cards.emplace_back(CardFactory::CreateNumberCard(EColor::Red, i));
+        Cards.emplace_back(CardFactory::CreateNumberCard(EColor::Green, i));
+        Cards.emplace_back(CardFactory::CreateNumberCard(EColor::Yellow, i));
+    }
+
+    for (int i = 0;  i < 2; i++)
+    {
+        Cards.emplace_back(CardFactory::CreateReverseCard(EColor::Blue, TurnActionHandler));
+        Cards.emplace_back(CardFactory::CreateReverseCard(EColor::Red, TurnActionHandler));
+        Cards.emplace_back(CardFactory::CreateReverseCard(EColor::Green, TurnActionHandler));
+        Cards.emplace_back(CardFactory::CreateReverseCard(EColor::Yellow, TurnActionHandler));
     }
 }
 

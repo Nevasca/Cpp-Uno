@@ -6,7 +6,7 @@
 #include "Public/Game/Players/HumanPlayer.h"
 
 MatchController::MatchController()
-    : DeckController(Board)
+    : DeckController(Board), TurnController(UIController)
 { }
 
 void MatchController::Initialize()
@@ -17,8 +17,8 @@ void MatchController::Initialize()
     }
 
     CreateDebugPlayers();
-    DeckController.Initialize();
     TurnController.Initialize(Players);
+    DeckController.Initialize(TurnController);
     
     bIsInitialized = true;
 }
@@ -52,7 +52,7 @@ void MatchController::Update()
     }
     else
     {
-        TurnController.PrepareNextTurn();
+        TurnController.PrepareNextTurn(*this);
     }
 }
 
@@ -132,7 +132,8 @@ bool MatchController::TryApplyPenalties(Player& Player)
 void MatchController::UseCard(std::shared_ptr<Card>&& Card)
 {
     UIController.ShowUsedCard(*Card, *TurnController.PeekCurrentPlayer());
-    
+
+    Card->Use();
     Board.Stack(std::move(Card));
 }
 

@@ -118,3 +118,10 @@ void UIController::ShowUnoNotYelledPenalty(const Player& Player, const std::vect
 
     ConsoleUtils::Delay(SHOW_UNO_NOT_YELLED_PENALTY_MILLISECONDS_DELAY, true);
 }
+
+void UIController::HandleTurnFlowReversed()
+{
+    std::cout << "\n\nTurn flow reversed!\n\n";
+
+    ConsoleUtils::Delay(SHOW_TURN_REVERSED_MILLISECONDS_DELAY, true);
+}

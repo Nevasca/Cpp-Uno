@@ -40,7 +40,7 @@ private:
     bool bIsInitialized{false};
     bool bIsMatchFinished{false};
     DeckController DeckController;
-    TurnController TurnController{};
+    TurnController TurnController;
     Board Board{};
     UIController UIController{};
     std::shared_ptr<Player> Winner{};
