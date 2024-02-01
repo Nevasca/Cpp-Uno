@@ -26,6 +26,7 @@ public:
     void UseCard(std::shared_ptr<Card>&& Card) override;
     bool TryYellUno(Player& Player) override;
     const std::shared_ptr<Card> PeekCurrentCard() const override;
+    const std::shared_ptr<Player>& GetWinner() const;
     void Shutdown();
 
 private:
@@ -42,6 +43,7 @@ private:
     TurnController TurnController{};
     Board Board{};
     UIController UIController{};
+    std::shared_ptr<Player> Winner{};
 
     void CreateDebugPlayers();
     void GiveInitialCardsToPlayers();
@@ -49,4 +51,6 @@ private:
     void ApplyNoUsableCardPenalty(Player& Player);
     bool CanApplyUnoPenalty(const Player& Player) const;
     void ApplyUnoNotYelledPenalty(Player& Player);
+    bool HasPlayerWon(const Player& Player) const;
+    void FinishMatchWithWinner(const std::shared_ptr<Player>& InWinner);
 };

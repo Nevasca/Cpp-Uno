@@ -22,6 +22,7 @@ public:
     void ShowAlreadyYelledUnoWarning();
     void ShowUnoYell();
     void ShowUnoNotYelledPenalty(const Player& Player, const std::vector<std::shared_ptr<Card>>& PenaltyCards);
+    void ShowWinner(const Player& Player);
 
 private:
 

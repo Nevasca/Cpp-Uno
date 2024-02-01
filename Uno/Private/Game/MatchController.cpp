@@ -37,13 +37,23 @@ void MatchController::Start()
 
 void MatchController::Update()
 {
+    const std::shared_ptr<Player> CurrentPlayer = TurnController.PeekCurrentPlayer();
+
     UIController.Clear();
     UIController.ShowCurrentTurn(*this, TurnController);
-    UIController.ShowPlayerHand(*this, *TurnController.PeekCurrentPlayer());
+    UIController.ShowPlayerHand(*this, *CurrentPlayer);
     UIController.ShowAvailableCommands();
 
     TurnController.PlayTurn(*this);
-    TurnController.PrepareNextTurn();
+
+    if(HasPlayerWon(*CurrentPlayer))
+    {
+        FinishMatchWithWinner(CurrentPlayer);
+    }
+    else
+    {
+        TurnController.PrepareNextTurn();
+    }
 }
 
 bool MatchController::IsMatchFinished() const
@@ -189,9 +199,29 @@ void MatchController::ApplyUnoNotYelledPenalty(Player& Player)
     }
 }
 
+bool MatchController::HasPlayerWon(const Player& Player) const
+{
+    return Player.GetTotalCards() == 0;
+}
+
+void MatchController::FinishMatchWithWinner(const std::shared_ptr<Player>& InWinner)
+{
+    Winner = InWinner;
+
+    UIController.Clear();
+    UIController.ShowWinner(*Winner);
+
+    bIsMatchFinished = true;
+}
+
 const std::shared_ptr<Card> MatchController::PeekCurrentCard() const
 {
     return Board.PeekCurrentCard();
+}
+
+const std::shared_ptr<Player>& MatchController::GetWinner() const
+{
+    return Winner;
 }
 
 void MatchController::Shutdown()
@@ -216,7 +246,7 @@ void MatchController::GiveInitialCardsToPlayers()
 {
     for(std::shared_ptr<Player>& Player : Players)
     {
-        constexpr int TotalInitialCardsPerPlayer = 3;
+        constexpr int TotalInitialCardsPerPlayer = 7;
         
         std::vector<std::shared_ptr<Card>> InitialCards{};
         InitialCards.reserve(TotalInitialCardsPerPlayer);

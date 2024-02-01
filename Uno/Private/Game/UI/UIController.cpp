@@ -118,3 +118,13 @@ void UIController::ShowUnoNotYelledPenalty(const Player& Player, const std::vect
 
     ConsoleUtils::Delay(SHOW_UNO_NOT_YELLED_PENALTY_MILLISECONDS_DELAY, true);
 }
+
+void UIController::ShowWinner(const Player& Player)
+{
+    std::string Output{};
+
+    Output += "\n\n\n" + Player.GetName() + " has won the game!!!\n\nHope you are still friends with them.\n";
+    std::cout << Output;
+
+    ConsoleUtils::Delay(5000, true);
+}
