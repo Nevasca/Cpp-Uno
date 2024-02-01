@@ -22,14 +22,12 @@ void TurnController::ShufflePlayers()
 void TurnController::PlayTurn(IMatchHandler& MatchHandler)
 {
     std::shared_ptr<Player>& CurrentPlayer = Players[CurrentPlayerIndex];
+
+    const bool bHasPenalties = MatchHandler.TryApplyPenalties(*CurrentPlayer);
     
-    if(MatchHandler.CanUseAnyCard(CurrentPlayer->GetCards()))
+    if(!bHasPenalties)
     {
-        CurrentPlayer->PlayTurn(MatchHandler);
-    }
-    else
-    {
-        MatchHandler.HandleNoUsableCard(*CurrentPlayer);
+        CurrentPlayer->PlayTurn(MatchHandler);    
     }
 }
 

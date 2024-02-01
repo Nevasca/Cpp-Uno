@@ -102,6 +102,23 @@ bool MatchController::TryUsingCard(Player& Player, int CardIndex)
     return false;
 }
 
+bool MatchController::TryApplyPenalties(Player& Player)
+{
+    if(!CanUseAnyCard(Player.GetCards()))
+    {
+        ApplyNoUsableCardPenalty(Player);
+        return true;
+    }
+
+    if(CanApplyUnoPenalty(Player))
+    {
+        ApplyUnoNotYelledPenalty(Player);
+        return true;
+    }
+    
+    return false;
+}
+
 void MatchController::UseCard(std::shared_ptr<Card>&& Card)
 {
     UIController.ShowUsedCard(*Card, *TurnController.PeekCurrentPlayer());
@@ -109,7 +126,7 @@ void MatchController::UseCard(std::shared_ptr<Card>&& Card)
     Board.Stack(std::move(Card));
 }
 
-void MatchController::HandleNoUsableCard(Player& Player)
+void MatchController::ApplyNoUsableCardPenalty(Player& Player)
 {
     std::vector<std::shared_ptr<Card>> PenaltyCards{};
     PenaltyCards.reserve(TOTAL_BUY_CARDS_PENALTY);
@@ -119,7 +136,52 @@ void MatchController::HandleNoUsableCard(Player& Player)
         PenaltyCards.emplace_back(DeckController.BuyCard());    
     }
 
+    Player.SetHasYelledUno(false);
+
     UIController.ShowNoCardsPenalty(Player, PenaltyCards);
+
+    for(std::shared_ptr<Card>& Card : PenaltyCards)
+    {
+        Player.GiveCard(std::move(Card));
+    }
+}
+
+bool MatchController::TryYellUno(Player& Player)
+{
+    if(Player.GetTotalCards() > MIN_CARDS_TO_YELL_UNO)
+    {
+        UIController.ShowMinCardsForUnoWarning(MIN_CARDS_TO_YELL_UNO);
+        return false;
+    }
+
+    if(Player.HasYelledUno())
+    {
+        UIController.ShowAlreadyYelledUnoWarning();
+        return false;
+    }
+
+    Player.SetHasYelledUno(true);
+
+    UIController.ShowUnoYell();
+    return true;
+}
+
+bool MatchController::CanApplyUnoPenalty(const Player& Player) const
+{
+    return Player.GetTotalCards() == REQUIRED_CARDS_UNO_PENALTY && !Player.HasYelledUno();
+}
+
+void MatchController::ApplyUnoNotYelledPenalty(Player& Player)
+{
+    std::vector<std::shared_ptr<Card>> PenaltyCards{};
+    PenaltyCards.reserve(TOTAL_BUY_CARDS_UNO_PENALTY);
+    
+    for(int i = 0; i < TOTAL_BUY_CARDS_UNO_PENALTY; i++)
+    {
+        PenaltyCards.emplace_back(DeckController.BuyCard());    
+    }
+
+    UIController.ShowUnoNotYelledPenalty(Player, PenaltyCards);
 
     for(std::shared_ptr<Card>& Card : PenaltyCards)
     {
@@ -154,7 +216,7 @@ void MatchController::GiveInitialCardsToPlayers()
 {
     for(std::shared_ptr<Player>& Player : Players)
     {
-        constexpr int TotalInitialCardsPerPlayer = 7;
+        constexpr int TotalInitialCardsPerPlayer = 3;
         
         std::vector<std::shared_ptr<Card>> InitialCards{};
         InitialCards.reserve(TotalInitialCardsPerPlayer);
