@@ -19,15 +19,16 @@ std::vector<std::shared_ptr<Card>> Board::TakeAllCards()
 {
     if(TossedCards.empty())
     {
-        return TossedCards;
+        return {};
     }
 
-    std::shared_ptr<Card> CurrentCard = TossedCards.back();
-    TossedCards.pop_back();
+    std::vector<std::shared_ptr<Card>> AllAvailableCards{};
+    AllAvailableCards.reserve(TossedCards.size());
 
-    std::vector<std::shared_ptr<Card>> AllAvailableCards = TossedCards;
-    TossedCards.clear();
-    TossedCards.emplace_back(std::move(CurrentCard));
+    std::swap(AllAvailableCards, TossedCards);
 
+    TossedCards.emplace_back(std::move(AllAvailableCards.back()));
+    AllAvailableCards.pop_back();
+    
     return AllAvailableCards;
 }

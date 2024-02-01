@@ -1,5 +1,7 @@
 ﻿#include "Public/Game/Cards/DeckController.h"
 
+#include <assert.h>
+
 #include "Public/Core/Random.h"
 #include "Public/Game/Cards/CardFactory.h"
 #include "Public/Game/IHasCard.h"
@@ -25,6 +27,8 @@ std::shared_ptr<Card> DeckController::BuyCard()
         RestockDeck();
     }
 
+    assert(!Cards.empty());
+    
     std::shared_ptr<Card> Card = Cards.back();
     Cards.pop_back();
 
@@ -49,12 +53,18 @@ void DeckController::RestockDeck()
 {
     std::vector<std::shared_ptr<Card>> SpareCards = SpareDeck.TakeAllCards();
 
+    size_t PreviousDeckSize = Cards.size();
     Cards.reserve(Cards.size() + SpareCards.size());
-    
-    for(std::shared_ptr<Card>& Card : SpareCards)
+
+    if(PreviousDeckSize < SpareCards.size())
     {
-        Cards.push_back(Card);
+        std::swap(Cards, SpareCards);
     }
 
+    for(std::shared_ptr<Card>& RemainingCard : SpareCards)
+    {
+        Cards.emplace_back(std::move(RemainingCard));
+    }
+    
     ShuffleCards();
 }
