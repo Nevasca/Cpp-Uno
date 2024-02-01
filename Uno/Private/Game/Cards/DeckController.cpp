@@ -2,6 +2,11 @@
 
 #include "Public/Core/Random.h"
 #include "Public/Game/Cards/CardFactory.h"
+#include "Public/Game/IHasCard.h"
+
+DeckController::DeckController(IHasCard& InSpareDeck)
+    : SpareDeck(InSpareDeck)
+{ }
 
 void DeckController::Initialize()
 {
@@ -42,5 +47,14 @@ void DeckController::CreateDeck()
 
 void DeckController::RestockDeck()
 {
-    Cards.push_back(CardFactory::CreateNumberCard(EColor::Blue, 0));
+    std::vector<std::shared_ptr<Card>> SpareCards = SpareDeck.TakeAllCards();
+
+    Cards.reserve(Cards.size() + SpareCards.size());
+    
+    for(std::shared_ptr<Card>& Card : SpareCards)
+    {
+        Cards.push_back(Card);
+    }
+
+    ShuffleCards();
 }

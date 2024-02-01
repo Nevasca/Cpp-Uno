@@ -1560,6 +1560,7 @@
     <ClInclude Include="Public\Game\Cards\NumberCard.h" />
     <ClInclude Include="Public\Game\EColor.h" />
     <ClInclude Include="Public\Game\ETurnFlow.h" />
+    <ClInclude Include="Public\Game\IHasCard.h" />
     <ClInclude Include="Public\Game\IMatchHandler.h" />
     <ClInclude Include="Public\Game\ITurnHandler.h" />
     <ClInclude Include="Public\Game\MatchController.h" />

@@ -14,6 +14,7 @@ class MatchController : public IMatchHandler
 {
 public:
 
+    MatchController();
     void Initialize();
     bool IsInitialized() const;
     void Start();
@@ -34,7 +35,7 @@ private:
     std::vector<std::shared_ptr<Player>> Players{};
     bool bIsInitialized{false};
     bool bIsMatchFinished{false};
-    DeckController DeckController{};
+    DeckController DeckController;
     TurnController TurnController{};
     Board Board{};
     UIController UIController{};

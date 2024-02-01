@@ -5,6 +5,10 @@
 #include "Public/Game/Card.h"
 #include "Public/Game/Players/HumanPlayer.h"
 
+MatchController::MatchController()
+    : DeckController(Board)
+{ }
+
 void MatchController::Initialize()
 {
     if(bIsInitialized)
