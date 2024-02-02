@@ -164,22 +164,13 @@ void MatchController::UseCard(std::shared_ptr<Card>&& Card)
 
 void MatchController::ApplyNoUsableCardPenalty(Player& Player)
 {
-    std::vector<std::shared_ptr<Card>> PenaltyCards{};
-    PenaltyCards.reserve(TOTAL_BUY_CARDS_PENALTY);
-    
-    for(int i = 0; i < TOTAL_BUY_CARDS_PENALTY; i++)
-    {
-        PenaltyCards.emplace_back(DeckController.BuyCard());    
-    }
+    std::vector<std::shared_ptr<Card>> PenaltyCards = DeckController.BuyCards(TOTAL_BUY_CARDS_PENALTY);
 
     Player.SetHasYelledUno(false);
 
     UIController.ShowNoCardsPenalty(Player, PenaltyCards);
 
-    for(std::shared_ptr<Card>& Card : PenaltyCards)
-    {
-        Player.GiveCard(std::move(Card));
-    }
+    Player.GiveCards(PenaltyCards);
 }
 
 bool MatchController::TryYellUno(Player& Player)
@@ -210,20 +201,11 @@ bool MatchController::CanApplyUnoPenalty(const Player& Player) const
 
 void MatchController::ApplyUnoNotYelledPenalty(Player& Player)
 {
-    std::vector<std::shared_ptr<Card>> PenaltyCards{};
-    PenaltyCards.reserve(TOTAL_BUY_CARDS_UNO_PENALTY);
-    
-    for(int i = 0; i < TOTAL_BUY_CARDS_UNO_PENALTY; i++)
-    {
-        PenaltyCards.emplace_back(DeckController.BuyCard());    
-    }
+    std::vector<std::shared_ptr<Card>> PenaltyCards = DeckController.BuyCards(TOTAL_BUY_CARDS_UNO_PENALTY);
 
     UIController.ShowUnoNotYelledPenalty(Player, PenaltyCards);
 
-    for(std::shared_ptr<Card>& Card : PenaltyCards)
-    {
-        Player.GiveCard(std::move(Card));
-    }
+    Player.GiveCards(PenaltyCards);
 }
 
 void MatchController::ClearMustUseCard()
