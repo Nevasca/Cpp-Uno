@@ -9,14 +9,14 @@ MatchController::MatchController()
     : DeckController(Board), TurnController(UIController)
 { }
 
-void MatchController::Initialize()
+void MatchController::Initialize(std::vector<std::string>& PlayerNames)
 {
     if(bIsInitialized)
     {
         return;
     }
 
-    CreateDebugPlayers();
+    CreatePlayers(PlayerNames);
     TurnController.Initialize(Players);
     DeckController.Initialize(TurnController);
     
@@ -251,16 +251,18 @@ void MatchController::Shutdown()
     }
 
     UIController.Clear();
+    bIsInitialized = false;
 }
 
-void MatchController::CreateDebugPlayers()
+void MatchController::CreatePlayers(std::vector<std::string>& Names)
 {
     Players.clear();
-    Players.reserve(3);
-    
-    Players.emplace_back(std::make_shared<HumanPlayer>("Yosuke"));
-    Players.emplace_back(std::make_shared<HumanPlayer>("Chie"));
-    Players.emplace_back(std::make_shared<HumanPlayer>("Yukiko"));
+    Players.reserve(Names.size());
+
+    for(std::string& Name : Names)
+    {
+        Players.emplace_back(std::make_shared<HumanPlayer>(std::move(Name)));
+    }
 }
 
 void MatchController::GiveInitialCardsToPlayers()

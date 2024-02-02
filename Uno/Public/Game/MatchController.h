@@ -13,7 +13,7 @@ class MatchController : public IMatchHandler
 public:
 
     MatchController();
-    void Initialize();
+    void Initialize(std::vector<std::string>& PlayerNames);
     bool IsInitialized() const;
     void Start();
     void Update();
@@ -47,7 +47,7 @@ private:
     std::shared_ptr<Player> Winner{};
     int16_t MustUseCardId{-1};
 
-    void CreateDebugPlayers();
+    void CreatePlayers(std::vector<std::string>& Names);
     void GiveInitialCardsToPlayers();
     void ApplyNoUsableCardPenalty(Player& Player);
     bool CanApplyUnoPenalty(const Player& Player) const;

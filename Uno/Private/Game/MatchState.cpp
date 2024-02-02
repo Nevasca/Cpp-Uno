@@ -5,9 +5,13 @@
 #include "Public/Core/StateMachine.h"
 #include "Public/Game/MatchFinishedState.h"
 
+MatchState::MatchState(const std::vector<std::string>& InPlayerNames)
+    : PlayerNames(InPlayerNames)
+{ }
+
 void MatchState::Enter()
 {
-    MatchController.Initialize();
+    MatchController.Initialize(PlayerNames);
     MatchController.Start();
 }
 

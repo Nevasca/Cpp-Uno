@@ -1,7 +1,7 @@
 ﻿#include "Public/MainMenu/MainMenuState.h"
 
 #include "Public/Core/StateMachine.h"
-#include "Public/Game/MatchState.h"
+#include "Public/MainMenu/Lobby/LobbyState.h"
 
 void MainMenuState::Enter()
 {
@@ -12,7 +12,7 @@ void MainMenuState::Update(StateMachine& StateMachine)
 {
     if(MainMenuController.IsPlayRequested())
     {
-        StateMachine.SetState<MatchState>();
+        StateMachine.SetState<LobbyState>();
         return;
     }
     

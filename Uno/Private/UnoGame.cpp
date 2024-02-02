@@ -3,8 +3,8 @@
 #include <memory>
 
 #include "Public/Core/Random.h"
-#include "Public/Game/MatchState.h"
 #include "Public/MainMenu/MainMenuState.h"
+#include "Public/MainMenu/Lobby/LobbyState.h"
 
 void UnoGame::Start()
 {
@@ -22,7 +22,7 @@ void UnoGame::CreateGameStates()
     GameStates.reserve(TotalGameStates);
 
     GameStates.emplace_back(std::make_shared<MainMenuState>());
-    GameStates.emplace_back(std::make_shared<MatchState>());
+    GameStates.emplace_back(std::make_shared<LobbyState>());
 
     StateMachine = {std::move(GameStates)};
 }
