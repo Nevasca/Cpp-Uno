@@ -1,18 +1,19 @@
 ﻿#include "Public/Game/Cards/DeckController.h"
 
-#include <assert.h>
+#include <cassert>
 
 #include "Public/Core/Random.h"
 #include "Public/Game/Cards/CardFactory.h"
 #include "Public/Game/IHasCard.h"
+#include "Public/Game/Cards/DeckData.h"
 
 DeckController::DeckController(IHasCard& InSpareDeck)
     : SpareDeck(InSpareDeck)
 { }
 
-void DeckController::Initialize()
+void DeckController::Initialize(ITurnActionHandler& TurnActionHandler)
 {
-    CreateDeck();
+    CreateDeck(TurnActionHandler);
 }
 
 void DeckController::ShuffleCards()
@@ -35,17 +36,61 @@ std::shared_ptr<Card> DeckController::BuyCard()
     return Card;
 }
 
-void DeckController::CreateDeck()
+std::vector<std::shared_ptr<Card>> DeckController::BuyCards(uint16_t TotalCards)
 {
-    constexpr int TotalCards = 40;  
-    Cards.reserve(TotalCards);
-    
-    for (uint16_t i = 0; i < 10; i++)
+    std::vector<std::shared_ptr<Card>> BoughtCards{};
+    BoughtCards.reserve(TotalCards);
+
+    for(int i = 0; i < TotalCards; i++)
     {
-        Cards.push_back(CardFactory::CreateNumberCard(EColor::Blue, i));
-        Cards.push_back(CardFactory::CreateNumberCard(EColor::Red, i));
-        Cards.push_back(CardFactory::CreateNumberCard(EColor::Green, i));
-        Cards.push_back(CardFactory::CreateNumberCard(EColor::Yellow, i));
+        BoughtCards.emplace_back(BuyCard());    
+    }
+
+    return BoughtCards;
+}
+
+void DeckController::CreateDeck(ITurnActionHandler& TurnActionHandler)
+{
+    Cards.reserve(DeckData::GetTotalCards());
+
+    const std::vector<EColor> AvailableNormalColors = DeckData::GetAvailableNormalColors();
+
+    CreateNumberCards(AvailableNormalColors);
+    CreateSpecialCards(AvailableNormalColors, TurnActionHandler);
+}
+
+void DeckController::CreateNumberCards(const std::vector<EColor>& Colors)
+{
+    for(const EColor Color : Colors)
+    {
+        for(uint32_t i = 0; i < DeckData::NUMBER_CARDS_PER_COLOR; i++)
+        {
+            for(uint16_t CardNumber = DeckData::MIN_NUMBER_CARD_NUMBER; CardNumber <= DeckData::MAX_NUMBER_CARD_NUMBER; CardNumber++)
+            {
+                Cards.emplace_back(CardFactory::CreateNumberCard(Color, CardNumber));
+            }
+        }
+    }
+}
+
+void DeckController::CreateSpecialCards(const std::vector<EColor>& Colors, ITurnActionHandler& TurnActionHandler)
+{
+    for(const EColor Color : Colors)
+    {
+        for(uint32_t i = 0; i < DeckData::PLUS_TWO_CARDS_PER_COLOR; i++)
+        {
+            Cards.emplace_back(CardFactory::CreatePlusTwoCard(Color, TurnActionHandler));
+        }
+
+        for(uint32_t i = 0; i < DeckData::REVERSE_CARDS_PER_COLOR; i++)
+        {
+            Cards.emplace_back(CardFactory::CreateReverseCard(Color, TurnActionHandler));
+        }
+
+        for(uint32_t i = 0; i < DeckData::JUMP_CARDS_PER_COLOR; i++)
+        {
+            Cards.emplace_back(CardFactory::CreateJumpCard(Color, TurnActionHandler));
+        }
     }
 }
 

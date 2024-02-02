@@ -20,6 +20,16 @@ void Player::GiveCard(std::shared_ptr<Card>&& Card)
     Cards.emplace_back(std::move(Card));
 }
 
+void Player::GiveCards(std::vector<std::shared_ptr<Card>>& InCards)
+{
+    Cards.reserve(Cards.size() + InCards.size());
+
+    for(std::shared_ptr<Card>& Card : InCards)
+    {
+        GiveCard(std::move(Card));
+    }
+}
+
 size_t Player::GetTotalCards() const
 {
     return Cards.size();

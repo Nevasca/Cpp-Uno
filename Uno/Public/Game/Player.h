@@ -16,6 +16,7 @@ public:
     const std::string& GetName() const;
     void SetCards(std::vector<std::shared_ptr<Card>>&& InCards);
     void GiveCard(std::shared_ptr<Card>&& Card);
+    void GiveCards(std::vector<std::shared_ptr<Card>>& InCards);
     size_t GetTotalCards() const;
     const std::vector<std::shared_ptr<Card>>& GetCards() const;
     const Card& PeekCard(int CardIndex) const;

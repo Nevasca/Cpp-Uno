@@ -118,3 +118,33 @@ void UIController::ShowUnoNotYelledPenalty(const Player& Player, const std::vect
 
     ConsoleUtils::Delay(SHOW_UNO_NOT_YELLED_PENALTY_MILLISECONDS_DELAY, true);
 }
+
+void UIController::ShowBoughtCards(const Player& Player, const std::vector<std::shared_ptr<Card>>& BoughtCards)
+{
+    std::string Output{};
+
+    Output += Player.GetName() + " has bought " + std::to_string(BoughtCards.size()) + " card(s):\n";
+    std::cout << Output;
+
+    CardPresenter.Show(BoughtCards);
+
+    std::cout << "\n\n";
+
+    ConsoleUtils::Delay(LONG_MESSAGE_MILLISECONDS_DELAY, true);
+}
+
+void UIController::HandleTurnFlowReversed()
+{
+    std::cout << "\n\nTurn flow reversed!\n\n";
+
+    ConsoleUtils::Delay(SHORT_MESSAGE_MILLISECONDS_DELAY, true);
+}
+
+void UIController::HandleTurnJumped(const Player& Player)
+{
+    std::string Output = "\n\nTurn Skipped! Too bad for " + Player.GetName() + "...";
+
+    std::cout << Output;
+
+    ConsoleUtils::Delay(MEDIUM_MESSAGE_MILLISECONDS_DELAY, true);
+}
