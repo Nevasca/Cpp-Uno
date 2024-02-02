@@ -4,22 +4,24 @@
 
 #include "Public/Core/Random.h"
 #include "Public/Game/MatchState.h"
+#include "Public/MainMenu/MainMenuState.h"
 
 void UnoGame::Start()
 {
     Random::SetRandomSeed();
 
     CreateGameStates();
-    StateMachine.SetState<MatchState>();
+    StateMachine.SetState<MainMenuState>();
 }
 
 void UnoGame::CreateGameStates()
 {
-    constexpr int TotalGameStates = 1;
+    constexpr int TotalGameStates = 2;
 
     std::vector<std::shared_ptr<IState>> GameStates{};
     GameStates.reserve(TotalGameStates);
 
+    GameStates.emplace_back(std::make_shared<MainMenuState>());
     GameStates.emplace_back(std::make_shared<MatchState>());
 
     StateMachine = {std::move(GameStates)};
