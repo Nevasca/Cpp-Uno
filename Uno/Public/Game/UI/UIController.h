@@ -23,6 +23,7 @@ public:
     void ShowAlreadyYelledUnoWarning();
     void ShowUnoYell();
     void ShowUnoNotYelledPenalty(const Player& Player, const std::vector<std::shared_ptr<Card>>& PenaltyCards);
+    void ShowBoughtCards(const Player& Player, const std::vector<std::shared_ptr<Card>>& BoughtCards);
     void HandleTurnFlowReversed() override;
     void HandleTurnJumped(const Player& Player) override;
 
@@ -33,6 +34,7 @@ private:
     static constexpr int SHOW_UNO_NOT_YELLED_PENALTY_MILLISECONDS_DELAY = 2000;
     static constexpr int SHORT_MESSAGE_MILLISECONDS_DELAY = 800;
     static constexpr int MEDIUM_MESSAGE_MILLISECONDS_DELAY = 1500;
+    static constexpr int LONG_MESSAGE_MILLISECONDS_DELAY = 2200;
     
     CardConsolePresenter CardPresenter{};
     TurnConsolePresenter TurnPresenter{};

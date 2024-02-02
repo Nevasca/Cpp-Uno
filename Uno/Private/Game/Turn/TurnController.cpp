@@ -52,7 +52,10 @@ ETurnResult TurnController::ExecutePreTurnAction(IMatchHandler& MatchHandler, Pl
 
     const ETurnResult TurnResult = PreTurnAction->Execute(MatchHandler, *this, CurrentPlayer);
 
-    PreTurnAction.reset();
+    if(TurnResult == ETurnResult::Ended)
+    {
+        PreTurnAction.reset();
+    }
 
     return TurnResult;
 }
@@ -74,7 +77,10 @@ ETurnResult TurnController::ExecutePostTurnAction(IMatchHandler& MatchHandler, P
 
     const ETurnResult TurnResult = PostTurnAction->Execute(MatchHandler, *this, Player);
 
-    PostTurnAction.reset();
+    if(TurnResult == ETurnResult::Ended)
+    {
+        PostTurnAction.reset();
+    }
 
     return TurnResult;
 }

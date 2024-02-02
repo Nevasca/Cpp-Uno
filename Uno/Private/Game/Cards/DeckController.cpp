@@ -1,6 +1,6 @@
 ﻿#include "Public/Game/Cards/DeckController.h"
 
-#include <assert.h>
+#include <cassert>
 
 #include "Public/Core/Random.h"
 #include "Public/Game/Cards/CardFactory.h"
@@ -35,12 +35,25 @@ std::shared_ptr<Card> DeckController::BuyCard()
     return Card;
 }
 
+std::vector<std::shared_ptr<Card>> DeckController::BuyCards(uint16_t TotalCards)
+{
+    std::vector<std::shared_ptr<Card>> BoughtCards{};
+    BoughtCards.reserve(TotalCards);
+
+    for(int i = 0; i < TotalCards; i++)
+    {
+        BoughtCards.emplace_back(BuyCard());    
+    }
+
+    return BoughtCards;
+}
+
 void DeckController::CreateDeck(ITurnActionHandler& TurnActionHandler)
 {
-    constexpr int TotalCards = 56;  
+    constexpr int TotalCards = 48;  
     Cards.reserve(TotalCards);
 
-    for (uint16_t i = 0; i < 10; i++)
+    for (uint16_t i = 0; i < 8; i++)
     {
         Cards.emplace_back(CardFactory::CreateNumberCard(EColor::Blue, i));
         Cards.emplace_back(CardFactory::CreateNumberCard(EColor::Red, i));
@@ -62,6 +75,14 @@ void DeckController::CreateDeck(ITurnActionHandler& TurnActionHandler)
         Cards.emplace_back(CardFactory::CreateJumpCard(EColor::Red, TurnActionHandler));
         Cards.emplace_back(CardFactory::CreateJumpCard(EColor::Green, TurnActionHandler));
         Cards.emplace_back(CardFactory::CreateJumpCard(EColor::Yellow, TurnActionHandler));
+    }
+
+    for (int i = 0;  i < 2; i++)
+    {
+        Cards.emplace_back(CardFactory::CreatePlusTwoCard(EColor::Blue, TurnActionHandler));
+        Cards.emplace_back(CardFactory::CreatePlusTwoCard(EColor::Red, TurnActionHandler));
+        Cards.emplace_back(CardFactory::CreatePlusTwoCard(EColor::Green, TurnActionHandler));
+        Cards.emplace_back(CardFactory::CreatePlusTwoCard(EColor::Yellow, TurnActionHandler));
     }
 }
 

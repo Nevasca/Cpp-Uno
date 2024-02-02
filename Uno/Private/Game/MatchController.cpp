@@ -39,6 +39,8 @@ void MatchController::Update()
 {
     const std::shared_ptr<Player> CurrentPlayer = TurnController.PeekCurrentPlayer();
 
+    ClearMustUseCard();
+
     UIController.Clear();
     UIController.ShowCurrentTurn(*this, TurnController);
     UIController.ShowPlayerHand(*this, *CurrentPlayer);
@@ -63,6 +65,11 @@ bool MatchController::IsMatchFinished() const
 
 bool MatchController::CanUseCard(const Card& DesiredCard) const
 {
+    if(MustUseCardId >= 0)
+    {
+        return DesiredCard.GetId() == MustUseCardId;
+    }
+
     const std::shared_ptr<Card> CurrentCard = Board.PeekCurrentCard();
 
     if(!CurrentCard)
@@ -75,6 +82,19 @@ bool MatchController::CanUseCard(const Card& DesiredCard) const
 
 bool MatchController::CanUseAnyCard(const std::vector<std::shared_ptr<Card>>& Cards) const
 {
+    if(MustUseCardId >= 0)
+    {
+        for(const std::shared_ptr<Card>& Card : Cards)
+        {
+            if(Card->GetId() == MustUseCardId)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     const std::shared_ptr<Card> CurrentCard = Board.PeekCurrentCard();
 
     if(!CurrentCard)
@@ -91,6 +111,11 @@ bool MatchController::CanUseAnyCard(const std::vector<std::shared_ptr<Card>>& Ca
     }
 
     return false;
+}
+
+void MatchController::SetMustUseCard(int16_t CardId)
+{
+    MustUseCardId = CardId;
 }
 
 bool MatchController::TryUsingCard(Player& Player, int CardIndex)
@@ -177,6 +202,7 @@ bool MatchController::TryYellUno(Player& Player)
     return true;
 }
 
+
 bool MatchController::CanApplyUnoPenalty(const Player& Player) const
 {
     return Player.GetTotalCards() == REQUIRED_CARDS_UNO_PENALTY && !Player.HasYelledUno();
@@ -198,6 +224,20 @@ void MatchController::ApplyUnoNotYelledPenalty(Player& Player)
     {
         Player.GiveCard(std::move(Card));
     }
+}
+
+void MatchController::ClearMustUseCard()
+{
+    MustUseCardId = -1;
+}
+
+void MatchController::BuyCardsFor(Player& Player, uint16_t TotalCards)
+{
+    std::vector<std::shared_ptr<Card>> BoughtCards = DeckController.BuyCards(TotalCards);
+
+    UIController.ShowBoughtCards(Player, BoughtCards);
+
+    Player.GiveCards(BoughtCards);
 }
 
 bool MatchController::HasPlayerWon(const Player& Player) const

@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "Public/Game/Cards/BuyCard.h"
 #include "Public/Game/Cards/JumpCard.h"
 #include "Public/Game/Cards/NumberCard.h"
 #include "Public/Game/Cards/ReverseCard.h"
@@ -19,4 +20,9 @@ std::shared_ptr<Card> CardFactory::CreateReverseCard(const EColor InColor, ITurn
 std::shared_ptr<Card> CardFactory::CreateJumpCard(const EColor InColor, ITurnActionHandler& InActionHandler)
 {
     return std::make_shared<JumpCard>(JUMP_CARD_ID, InColor, InActionHandler);
+}
+
+std::shared_ptr<Card> CardFactory::CreatePlusTwoCard(const EColor InColor, ITurnActionHandler& InActionHandler)
+{
+    return std::make_shared<BuyCard>(PLUS_TWO_CARD_ID, InColor, InActionHandler, 2);
 }

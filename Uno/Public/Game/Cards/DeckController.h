@@ -14,6 +14,7 @@ public:
     void Initialize(ITurnActionHandler& TurnActionHandler);
     void ShuffleCards();
     std::shared_ptr<Card> BuyCard();
+    std::vector<std::shared_ptr<Card>> BuyCards(uint16_t TotalCards);
 
 private:
 
