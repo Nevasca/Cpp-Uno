@@ -12,7 +12,7 @@ void MainMenuController::Update()
     bIsPlayRequested = Input.HasPressedPlay();
 }
 
-bool MainMenuController::IsPlayRequested()
+bool MainMenuController::IsPlayRequested() const
 {
     return bIsPlayRequested;
 }

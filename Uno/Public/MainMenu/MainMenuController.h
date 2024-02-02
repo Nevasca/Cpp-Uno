@@ -8,7 +8,7 @@ public:
 
     void Start();
     void Update();
-    bool IsPlayRequested();
+    bool IsPlayRequested() const;
 
 private:
 
