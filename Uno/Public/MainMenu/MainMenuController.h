@@ -13,6 +13,6 @@ public:
 private:
 
     bool bIsPlayRequested{false};
-    UIMainMenuController UIController;
-    MainMenuConsoleInput Input;
+    UIMainMenuController UIController{};
+    MainMenuConsoleInput Input{};
 };
