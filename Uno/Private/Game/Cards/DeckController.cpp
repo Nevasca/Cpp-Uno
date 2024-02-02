@@ -37,7 +37,7 @@ std::shared_ptr<Card> DeckController::BuyCard()
 
 void DeckController::CreateDeck(ITurnActionHandler& TurnActionHandler)
 {
-    constexpr int TotalCards = 48;  
+    constexpr int TotalCards = 56;  
     Cards.reserve(TotalCards);
 
     for (uint16_t i = 0; i < 10; i++)
@@ -54,6 +54,14 @@ void DeckController::CreateDeck(ITurnActionHandler& TurnActionHandler)
         Cards.emplace_back(CardFactory::CreateReverseCard(EColor::Red, TurnActionHandler));
         Cards.emplace_back(CardFactory::CreateReverseCard(EColor::Green, TurnActionHandler));
         Cards.emplace_back(CardFactory::CreateReverseCard(EColor::Yellow, TurnActionHandler));
+    }
+
+    for (int i = 0;  i < 2; i++)
+    {
+        Cards.emplace_back(CardFactory::CreateJumpCard(EColor::Blue, TurnActionHandler));
+        Cards.emplace_back(CardFactory::CreateJumpCard(EColor::Red, TurnActionHandler));
+        Cards.emplace_back(CardFactory::CreateJumpCard(EColor::Green, TurnActionHandler));
+        Cards.emplace_back(CardFactory::CreateJumpCard(EColor::Yellow, TurnActionHandler));
     }
 }
 

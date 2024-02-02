@@ -25,6 +25,7 @@ public:
     const std::vector<std::shared_ptr<Player>>& GetOrderedPlayers() const override;
     ETurnFlow GetCurrentFlow() const override;
     void ReverseFlow() override;
+    void JumpTurn() override;
     void AddPreTurnAction(std::unique_ptr<TurnAction>&& InAction) override;
     void AddPostTurnAction(std::unique_ptr<TurnAction>&& InAction) override;
 

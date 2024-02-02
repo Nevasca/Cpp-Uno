@@ -120,6 +120,11 @@ void TurnController::ReverseFlow()
     EventLister.HandleTurnFlowReversed();
 }
 
+void TurnController::JumpTurn()
+{
+    EventLister.HandleTurnJumped(*Players[CurrentPlayerIndex]);
+}
+
 void TurnController::AddPreTurnAction(std::unique_ptr<TurnAction>&& InAction)
 {
     if(PreTurnAction && PreTurnAction->CanAccumulate(*InAction))

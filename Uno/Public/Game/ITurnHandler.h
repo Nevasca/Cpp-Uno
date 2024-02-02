@@ -17,8 +17,9 @@ public:
     virtual ETurnFlow GetCurrentFlow() const = 0;
     virtual const std::shared_ptr<Player>& PeekCurrentPlayer() const = 0;
     virtual void ReverseFlow() = 0;
+    virtual void JumpTurn() = 0;
     virtual ~ITurnHandler() = default;
-    
+
     NO_COPY_MOVE(ITurnHandler)
 
 protected:
