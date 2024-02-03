@@ -2,8 +2,12 @@
 
 #include <iostream>
 
+#include "Public/Core/ConsoleUtils.h"
+
 void UIMainMenuController::ShowMainMenu()
 {
+    ConsoleUtils::Clear();
+    
     std::string Output{};
 
     Output += "UNO!\nCpp Console Version\n\n";

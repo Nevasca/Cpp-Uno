@@ -14,6 +14,6 @@ public:
 
 private:
 
-    MatchController MatchController{};
+    std::shared_ptr<MatchController> MatchController{};
     std::vector<std::string> PlayerNames{};
 };

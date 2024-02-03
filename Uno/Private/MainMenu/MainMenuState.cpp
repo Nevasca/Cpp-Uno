@@ -20,4 +20,6 @@ void MainMenuState::Update(StateMachine& StateMachine)
 }
 
 void MainMenuState::Exit()
-{ }
+{
+    MainMenuController.Shutdown();
+}

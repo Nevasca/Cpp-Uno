@@ -11,18 +11,26 @@ void MatchOutcomeController::Start()
 
 void MatchOutcomeController::Update()
 {
-    UIController.ShowExitMessage();
+    UIController.ShowExitMessage(OutcomeConsoleInput::RESTART_INPUT_NAME, OutcomeConsoleInput::QUIT_INPUT_NAME);
     Input.Process();
 
+    bIsRestartRequested = Input.HasPressedRestarted();
     bIsExitRequested = Input.HasPressedExit();
 }
 
 void MatchOutcomeController::Shutdown()
 {
     Winner.reset();
+    bIsRestartRequested = false;
+    bIsExitRequested = false;
 }
 
 bool MatchOutcomeController::IsExitRequested() const
 {
     return bIsExitRequested;
+}
+
+bool MatchOutcomeController::IsRestartRequested() const
+{
+    return bIsRestartRequested;
 }

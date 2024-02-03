@@ -13,7 +13,13 @@ void UIMatchOutcomeController::ShowWinner(const Player& Winner)
     std::cout << Output;
 }
 
-void UIMatchOutcomeController::ShowExitMessage()
+void UIMatchOutcomeController::ShowExitMessage(char RestartInputName, char QuitInputName)
 {
-    std::cout << "Press any key to close the game...";
+    std::string Output = "Restart match [";
+    Output += RestartInputName;
+    Output += '/';
+    Output += QuitInputName;
+    Output += "]? ";
+    
+    std::cout << Output;
 }

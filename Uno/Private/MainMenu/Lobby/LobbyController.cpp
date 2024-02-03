@@ -32,6 +32,12 @@ void LobbyController::Update()
     }
 }
 
+void LobbyController::Shutdown()
+{
+    JoinedPlayerNames.clear();
+    bIsEveryPlayerReady = false;
+}
+
 bool LobbyController::IsEveryPlayerReady() const
 {
     return bIsEveryPlayerReady;

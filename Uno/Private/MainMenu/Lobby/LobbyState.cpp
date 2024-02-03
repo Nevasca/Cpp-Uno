@@ -22,4 +22,6 @@ void LobbyState::Update(StateMachine& StateMachine)
 }
 
 void LobbyState::Exit()
-{ }
+{
+    LobbyController.Shutdown();
+}

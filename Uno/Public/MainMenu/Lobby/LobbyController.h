@@ -12,6 +12,7 @@ public:
     LobbyController();
     void Start();
     void Update();
+    void Shutdown();
     bool IsEveryPlayerReady() const;
     const std::vector<std::string>& GetPlayers() const;
 
