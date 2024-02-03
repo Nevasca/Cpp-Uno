@@ -7,5 +7,5 @@ class UIMatchOutcomeController
 public:
 
     void ShowWinner(const Player& Winner);
-    void ShowExitMessage();
+    void ShowExitMessage(char RestartInputName, char QuitInputName);
 };

@@ -4,41 +4,46 @@
 
 #include "Public/Game/Card.h"
 
+CardConsolePresenter::CardConsolePresenter()
+{
+    ColorMapping[EColor::Blue] = ConsoleColor::Blue;
+    ColorMapping[EColor::Green] = ConsoleColor::Green;
+    ColorMapping[EColor::Red] = ConsoleColor::Red;
+    ColorMapping[EColor::Yellow] = ConsoleColor::Yellow;
+    ColorMapping[EColor::Wild] = ConsoleColor::White;
+}
+
 void CardConsolePresenter::Show(const Card& Card)
 {
-    std::cout << Card.ToShortString();
+    std::cout << ColorMapping[Card.GetColor()] << Card.ToShortString() << ConsoleColor::White;
 }
 
 void CardConsolePresenter::Show(const std::vector<std::shared_ptr<Card>>& Cards)
 {
-    constexpr int TotalCharsPerCard = 6;
-    constexpr int TotalLineBreaks = 1;
-
-    std::string Output{};
-    Output.reserve(Cards.size() * TotalCharsPerCard + TotalLineBreaks);
-
     for(const std::shared_ptr<Card>& Card : Cards)
     {
-        Output += Card->ToShortString() + "   ";
+        std::string Output = Card->ToShortString() + "   ";
+        std::cout << ColorMapping[Card->GetColor()] << Output;
     }
 
-    Output += "\n";
-    
-    std::cout << Output;
+    std::cout << ConsoleColor::White << "\n";
 }
 
 void CardConsolePresenter::Show(const std::vector<CardRenderData>& CardsData)
 {
-    constexpr int TotalCharsPerCard = 12;
+    for (const CardRenderData& CardData : CardsData)
+    {
+        std::string Output = CardData.CardToRender.ToShortString() + "   ";
+        std::cout << ColorMapping[CardData.CardToRender.GetColor()] << Output;
+    }
+
+    std::cout << ConsoleColor::White;
+
+    constexpr int TotalCharsPerCard = 6;
     constexpr int TotalLineBreaks = 2;
 
     std::string Output{};
     Output.reserve(CardsData.size() * TotalCharsPerCard + TotalLineBreaks);
-
-    for (const CardRenderData& CardData : CardsData)
-    {
-        Output += CardData.CardToRender.ToShortString() + "   ";
-    }
 
     Output += "\n";
 

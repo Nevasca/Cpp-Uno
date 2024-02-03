@@ -6,6 +6,7 @@ class MatchState : public IState
 {
 public:
 
+    MatchState(const std::vector<std::string>& InPlayerNames);
     void Enter() override;
     void Update(StateMachine& StateMachine) override;
     void Exit() override;
@@ -13,5 +14,6 @@ public:
 
 private:
 
-    MatchController MatchController{};
+    std::shared_ptr<MatchController> MatchController{};
+    std::vector<std::string> PlayerNames{};
 };
