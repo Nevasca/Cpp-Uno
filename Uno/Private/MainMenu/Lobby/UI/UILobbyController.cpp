@@ -40,11 +40,11 @@ void UILobbyController::ShowCurrentLobby(const std::vector<std::string>& JoinedP
 
 void UILobbyController::ShowJoinPlayerMessage(const std::string& StartInputName, bool bHasRequiredPlayers)
 {
-    std::string Output = "Enter a player name to join ";
+    std::string Output = "Enter a player name to join";
 
     if(bHasRequiredPlayers)
     {
-        Output += "('" + StartInputName + "' to start)";
+        Output += " ('" + StartInputName + "' to start)";
     }
 
     Output += ": ";
