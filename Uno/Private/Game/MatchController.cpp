@@ -269,12 +269,10 @@ void MatchController::GiveInitialCardsToPlayers()
 {
     for(std::shared_ptr<Player>& Player : Players)
     {
-        constexpr int TotalInitialCardsPerPlayer = 7;
-        
         std::vector<std::shared_ptr<Card>> InitialCards{};
-        InitialCards.reserve(TotalInitialCardsPerPlayer);
+        InitialCards.reserve(INITIAL_CARDS_PER_PLAYER);
 
-        for(int i = 0; i < TotalInitialCardsPerPlayer; i++)
+        for(int i = 0; i < INITIAL_CARDS_PER_PLAYER; i++)
         {
             InitialCards.emplace_back(DeckController.BuyCard());
         }

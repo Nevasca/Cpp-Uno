@@ -32,6 +32,7 @@ public:
 
 private:
 
+    static constexpr int INITIAL_CARDS_PER_PLAYER = 7;
     static constexpr uint16_t TOTAL_BUY_CARDS_PENALTY = 1;
     static constexpr uint8_t MIN_CARDS_TO_YELL_UNO = 2;
     static constexpr uint8_t REQUIRED_CARDS_UNO_PENALTY = 1;
