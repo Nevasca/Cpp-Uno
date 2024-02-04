@@ -8,6 +8,7 @@ public:
 
     HumanPlayer(std::string&& InName);
     void PlayTurn(IMatchHandler& MatchHandler) override;
+    void ChooseColor(IMatchHandler& MathHandler) override;
     ~HumanPlayer() = default;
 
 private:

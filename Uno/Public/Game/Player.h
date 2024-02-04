@@ -13,6 +13,7 @@ class Player
 public:
 
     virtual void PlayTurn(IMatchHandler& MatchHandler) = 0;
+    virtual void ChooseColor(IMatchHandler& MathHandler) = 0;
     const std::string& GetName() const;
     void SetCards(std::vector<std::shared_ptr<Card>>&& InCards);
     void GiveCard(std::shared_ptr<Card>&& Card);

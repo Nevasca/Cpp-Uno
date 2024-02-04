@@ -27,3 +27,19 @@ void HumanPlayer::PlayTurn(IMatchHandler& MatchHandler)
     }
     while (!bHasFinishedTurn);
 }
+
+void HumanPlayer::ChooseColor(IMatchHandler& MathHandler)
+{
+    bool bHasChosenValidColor = false;
+
+    do
+    {
+        Input.Process();
+
+        if(Input.HasSelectedAColor())
+        {
+            bHasChosenValidColor = MathHandler.TrySetCurrentColor(Input.GetSelectedColorId());
+        }
+    }
+    while (!bHasChosenValidColor);
+}

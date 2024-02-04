@@ -26,6 +26,8 @@ public:
     void UseCard(std::shared_ptr<Card>&& Card) override;
     bool TryYellUno(Player& Player) override;
     void BuyCardsFor(Player& Player, uint16_t TotalCards) override;
+    void DecideCurrentColor(Player& Player) override;
+    bool TrySetCurrentColor(uint8_t ColorId) override;
     const std::shared_ptr<Card> PeekCurrentCard() const override;
     const std::shared_ptr<Player>& GetWinner() const;
     void Shutdown();
@@ -54,6 +56,7 @@ private:
     bool CanApplyUnoPenalty(const Player& Player) const;
     void ApplyUnoNotYelledPenalty(Player& Player);
     void ClearMustUseCard();
+    bool CanChooseColor(EColor Color, const std::vector<EColor>& AvailableColors) const;
     bool HasPlayerWon(const Player& Player) const;
     void FinishMatchWithWinner(const std::shared_ptr<Player>& InWinner);
 };

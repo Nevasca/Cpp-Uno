@@ -17,6 +17,7 @@ public:
     void Show(const Card& Card);
     void Show(const std::vector<std::shared_ptr<Card>>& Cards);
     void Show(const std::vector<CardRenderData>& CardsData);
+    const std::map<EColor, ConsoleColor>& GetColorMapping() const;
 
 private:
 

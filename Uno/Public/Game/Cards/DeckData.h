@@ -14,6 +14,7 @@ public:
     static constexpr uint32_t PLUS_TWO_CARDS_PER_COLOR = 2;
     static constexpr uint32_t REVERSE_CARDS_PER_COLOR = 2;
     static constexpr uint32_t JUMP_CARDS_PER_COLOR = 2;
+    static constexpr uint32_t WILD_PLUS_FOUR_CARDS = 4;
 
     static std::vector<EColor> GetAvailableNormalColors();
     static uint32_t GetTotalCards();

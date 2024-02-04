@@ -13,6 +13,7 @@ uint32_t DeckData::GetTotalCards()
     TotalCards += PLUS_TWO_CARDS_PER_COLOR * TotalNormalColors;
     TotalCards += REVERSE_CARDS_PER_COLOR * TotalNormalColors;
     TotalCards += JUMP_CARDS_PER_COLOR * TotalNormalColors;
+    TotalCards += WILD_PLUS_FOUR_CARDS;
     
     return TotalCards;
 }

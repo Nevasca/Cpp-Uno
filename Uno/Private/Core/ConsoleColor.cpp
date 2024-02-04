@@ -7,6 +7,7 @@ const ConsoleColor ConsoleColor::Blue = {FOREGROUND_BLUE};
 const ConsoleColor ConsoleColor::Green = {FOREGROUND_GREEN};
 const ConsoleColor ConsoleColor::Red = {FOREGROUND_RED};
 const ConsoleColor ConsoleColor::Yellow = {FOREGROUND_RED | FOREGROUND_GREEN};
+const ConsoleColor ConsoleColor::Pink = {FOREGROUND_RED | FOREGROUND_BLUE};
 
 ConsoleColor::ConsoleColor(uint16_t InColorFlag)
     : Color(InColorFlag)

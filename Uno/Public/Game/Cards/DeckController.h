@@ -17,6 +17,7 @@ public:
     void ShuffleCards();
     std::shared_ptr<Card> BuyCard();
     std::vector<std::shared_ptr<Card>> BuyCards(uint16_t TotalCards);
+    std::vector<EColor> GetAvailableNormalColors() const;
 
 private:
 
