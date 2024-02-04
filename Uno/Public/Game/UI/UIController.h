@@ -14,7 +14,7 @@ public:
     void Clear();
     void ShowCurrentTurn(const IMatchHandler& MatchHandler, const ITurnHandler& TurnHandler);
     void ShowPlayerHand(const IMatchHandler& MatchHandler, const Player& Player);
-    void ShowAvailableCommands();
+    void ShowAvailableCommands(const Player& Player);
     void ShowUsedCard(const Card& Card, const Player& Player);
     void ShowNoCardsPenalty(const Player& Player, const std::vector<std::shared_ptr<Card>>& PenaltyCards);
     void ShowInvalidCardWarning();
@@ -27,6 +27,7 @@ public:
     void ShowChooseColor(const std::vector<EColor>& AvailableColors);
     void ShowInvalidColorWarning();
     void ShowCardColorChanged(EColor Color);
+    void EnableSpecMode();
     void HandleTurnFlowReversed() override;
     void HandleTurnJumped(const Player& Player) override;
 
@@ -41,4 +42,5 @@ private:
     
     CardConsolePresenter CardPresenter{};
     TurnConsolePresenter TurnPresenter{};
+    bool bIsSpecMode{false};
 };

@@ -4,8 +4,8 @@
 
 #include "Public/Game/IMatchHandler.h"
 
-HumanPlayer::HumanPlayer(std::string&& InName)
-    : Player(std::move(InName))
+HumanPlayer::HumanPlayer(std::string&& InName, bool bInIsLocalPlayer)
+    : Player(std::move(InName), bInIsLocalPlayer)
 { }
 
 void HumanPlayer::PlayTurn(IMatchHandler& MatchHandler)
@@ -28,7 +28,7 @@ void HumanPlayer::PlayTurn(IMatchHandler& MatchHandler)
     while (!bHasFinishedTurn);
 }
 
-void HumanPlayer::ChooseColor(IMatchHandler& MathHandler)
+void HumanPlayer::ChooseColor(IMatchHandler& MathHandler, const std::vector<EColor>& AvailableColors)
 {
     bool bHasChosenValidColor = false;
 

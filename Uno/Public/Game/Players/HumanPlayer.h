@@ -6,9 +6,9 @@ class HumanPlayer : public Player
 {
 public:
 
-    HumanPlayer(std::string&& InName);
+    HumanPlayer(std::string&& InName, bool bInIsLocalPlayer = true);
     void PlayTurn(IMatchHandler& MatchHandler) override;
-    void ChooseColor(IMatchHandler& MathHandler) override;
+    void ChooseColor(IMatchHandler& MathHandler, const std::vector<EColor>& AvailableColors) override;
     ~HumanPlayer() = default;
 
 private:

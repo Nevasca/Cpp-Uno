@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "LobbyConsoleInput.h"
+#include "Public/PlayerData.h"
 #include "UI/UILobbyController.h"
 
 class LobbyController
@@ -14,14 +15,15 @@ public:
     void Update();
     void Shutdown();
     bool IsEveryPlayerReady() const;
-    const std::vector<std::string>& GetPlayers() const;
+    const std::vector<PlayerData>& GetPlayers() const;
 
 private:
 
     static constexpr uint16_t MIN_PLAYERS = 2;
     static constexpr uint16_t MAX_PLAYERS = 10;
+    static constexpr char BOT_SYMBOL = '!';
     
-    std::vector<std::string> JoinedPlayerNames{};
+    std::vector<PlayerData> JoinedPlayers{};
     bool bIsEveryPlayerReady{false};
     UILobbyController UIController;
     LobbyConsoleInput Input{};

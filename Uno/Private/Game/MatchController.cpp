@@ -3,20 +3,21 @@
 #include <iostream>
 
 #include "Public/Game/Card.h"
+#include "Public/Game/Players/AIPlayer.h"
 #include "Public/Game/Players/HumanPlayer.h"
 
 MatchController::MatchController()
     : DeckController(Board), TurnController(UIController)
 { }
 
-void MatchController::Initialize(std::vector<std::string>& PlayerNames)
+void MatchController::Initialize(std::vector<PlayerData>& JoinedPlayers)
 {
     if(bIsInitialized)
     {
         return;
     }
 
-    CreatePlayers(PlayerNames);
+    CreatePlayers(JoinedPlayers);
     TurnController.Initialize(Players);
     DeckController.Initialize(TurnController);
     
@@ -44,7 +45,7 @@ void MatchController::Update()
     UIController.Clear();
     UIController.ShowCurrentTurn(*this, TurnController);
     UIController.ShowPlayerHand(*this, *CurrentPlayer);
-    UIController.ShowAvailableCommands();
+    UIController.ShowAvailableCommands(*CurrentPlayer);
 
     TurnController.PlayTurn(*this);
 
@@ -118,11 +119,15 @@ void MatchController::SetMustUseCard(int16_t CardId)
     MustUseCardId = CardId;
 }
 
-bool MatchController::TryUsingCard(Player& Player, int CardIndex)
+bool MatchController::TryUsingCard(Player& Player, int CardIndex, bool bNotifyFailedAttempt)
 {
     if(CardIndex < 0 || CardIndex >= static_cast<int>(Player.GetTotalCards()))
     {
-        UIController.ShowInvalidCardWarning();
+        if(bNotifyFailedAttempt)
+        {
+            UIController.ShowInvalidCardWarning();
+        }
+
         return false;
     }
 
@@ -132,7 +137,10 @@ bool MatchController::TryUsingCard(Player& Player, int CardIndex)
         return true;
     }
 
-    UIController.ShowCantUseCardWarning();
+    if(bNotifyFailedAttempt)
+    {
+        UIController.ShowCantUseCardWarning();
+    }
 
     return false;
 }
@@ -173,17 +181,25 @@ void MatchController::ApplyNoUsableCardPenalty(Player& Player)
     Player.GiveCards(PenaltyCards);
 }
 
-bool MatchController::TryYellUno(Player& Player)
+bool MatchController::TryYellUno(Player& Player, bool bNotifyFailedAttempt)
 {
     if(Player.GetTotalCards() > MIN_CARDS_TO_YELL_UNO)
     {
-        UIController.ShowMinCardsForUnoWarning(MIN_CARDS_TO_YELL_UNO);
+        if(bNotifyFailedAttempt)
+        {
+            UIController.ShowMinCardsForUnoWarning(MIN_CARDS_TO_YELL_UNO);
+        }
+
         return false;
     }
 
     if(Player.HasYelledUno())
     {
-        UIController.ShowAlreadyYelledUnoWarning();
+        if(bNotifyFailedAttempt)
+        {
+            UIController.ShowAlreadyYelledUnoWarning();
+        }
+
         return false;
     }
 
@@ -192,7 +208,6 @@ bool MatchController::TryYellUno(Player& Player)
     UIController.ShowUnoYell();
     return true;
 }
-
 
 bool MatchController::CanApplyUnoPenalty(const Player& Player) const
 {
@@ -224,12 +239,17 @@ void MatchController::BuyCardsFor(Player& Player, uint16_t TotalCards)
 
 void MatchController::DecideCurrentColor(Player& Player)
 {
-    UIController.ShowChooseColor(DeckController.GetAvailableNormalColors());
+    const std::vector<EColor> AvailableColors = DeckController.GetAvailableNormalColors();
 
-    Player.ChooseColor(*this);
+    if(Player.IsLocalPlayer())
+    {
+        UIController.ShowChooseColor(AvailableColors);
+    }
+
+    Player.ChooseColor(*this, AvailableColors);
 }
 
-bool MatchController::TrySetCurrentColor(uint8_t ColorId)
+bool MatchController::TrySetCurrentColor(uint8_t ColorId, bool bNotifyFailedFailedAttempt)
 {
     std::vector<EColor> AvailableColors = DeckController.GetAvailableNormalColors();
 
@@ -238,7 +258,11 @@ bool MatchController::TrySetCurrentColor(uint8_t ColorId)
     if(!TryUIntToColor(ColorId, ChosenColor) ||
         !CanChooseColor(ChosenColor, AvailableColors))
     {
-        UIController.ShowInvalidColorWarning();
+        if(bNotifyFailedFailedAttempt)
+        {
+            UIController.ShowInvalidColorWarning();
+        }
+
         return false;
     }
 
@@ -293,14 +317,29 @@ void MatchController::Shutdown()
     bIsInitialized = false;
 }
 
-void MatchController::CreatePlayers(std::vector<std::string>& Names)
+void MatchController::CreatePlayers(std::vector<PlayerData>& JoinedPlayers)
 {
     Players.clear();
-    Players.reserve(Names.size());
+    Players.reserve(JoinedPlayers.size());
 
-    for(std::string& Name : Names)
+    int TotalHumanPlayers = 0;    
+
+    for(PlayerData& Player : JoinedPlayers)
     {
-        Players.emplace_back(std::make_shared<HumanPlayer>(std::move(Name)));
+        if(Player.bIsBot)
+        {
+            Players.emplace_back(std::make_shared<AIPlayer>(std::move(Player.Name)));
+        }
+        else
+        {
+            Players.emplace_back(std::make_shared<HumanPlayer>(std::move(Player.Name)));
+            TotalHumanPlayers++;
+        }
+    }
+
+    if(TotalHumanPlayers == 0)
+    {
+        UIController.EnableSpecMode();
     }
 }
 

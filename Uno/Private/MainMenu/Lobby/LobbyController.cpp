@@ -1,7 +1,7 @@
 ﻿#include "Public/MainMenu/Lobby/LobbyController.h"
 
 LobbyController::LobbyController()
-    : UIController(MIN_PLAYERS, MAX_PLAYERS)
+    : UIController(MIN_PLAYERS, MAX_PLAYERS, BOT_SYMBOL)
 { }
 
 void LobbyController::Start()
@@ -9,7 +9,7 @@ void LobbyController::Start()
 
 void LobbyController::Update()
 {
-    UIController.ShowCurrentLobby(JoinedPlayerNames, LobbyConsoleInput::START_NAME, HasRequiredPlayers());
+    UIController.ShowCurrentLobby(JoinedPlayers, LobbyConsoleInput::START_NAME, HasRequiredPlayers());
 
     Input.Process();
 
@@ -34,7 +34,7 @@ void LobbyController::Update()
 
 void LobbyController::Shutdown()
 {
-    JoinedPlayerNames.clear();
+    JoinedPlayers.clear();
     bIsEveryPlayerReady = false;
 }
 
@@ -43,9 +43,9 @@ bool LobbyController::IsEveryPlayerReady() const
     return bIsEveryPlayerReady;
 }
 
-const std::vector<std::string>& LobbyController::GetPlayers() const
+const std::vector<PlayerData>& LobbyController::GetPlayers() const
 {
-    return JoinedPlayerNames;
+    return JoinedPlayers;
 }
 
 void LobbyController::TryJoinPlayer(std::string&& PlayerName)
@@ -55,15 +55,22 @@ void LobbyController::TryJoinPlayer(std::string&& PlayerName)
         UIController.ShowAlreadyJoinedWarning(PlayerName);
         return;
     }
-    
-    JoinedPlayerNames.emplace_back(std::move(PlayerName));
+
+    bool bIsBot = PlayerName.back() == BOT_SYMBOL;
+
+    if(bIsBot && PlayerName.size() > 1)
+    {
+        PlayerName.pop_back();
+    }
+
+    JoinedPlayers.emplace_back(std::move(PlayerName), bIsBot);
 }
 
 bool LobbyController::IsPlayerAlreadyJoined(const std::string& Name) const
 {
-    for(const std::string& ExistingName : JoinedPlayerNames)
+    for(const PlayerData& ExistingPlayer : JoinedPlayers)
     {
-        if(ExistingName == Name)
+        if(ExistingPlayer.Name == Name)
         {
             return false;
         }
@@ -74,10 +81,10 @@ bool LobbyController::IsPlayerAlreadyJoined(const std::string& Name) const
 
 bool LobbyController::HasRequiredPlayers() const
 {
-    return JoinedPlayerNames.size() >= MIN_PLAYERS;
+    return JoinedPlayers.size() >= MIN_PLAYERS;
 }
 
 bool LobbyController::IsFull() const
 {
-    return JoinedPlayerNames.size() == MAX_PLAYERS;
+    return JoinedPlayers.size() == MAX_PLAYERS;
 }
