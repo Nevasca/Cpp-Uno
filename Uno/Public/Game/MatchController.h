@@ -3,6 +3,7 @@
 #include "IMatchHandler.h"
 #include "Cards/DeckController.h"
 #include "Match/Board.h"
+#include "Public/PlayerData.h"
 #include "Turn/TurnController.h"
 #include "UI/UIController.h"
 
@@ -13,7 +14,7 @@ class MatchController : public IMatchHandler
 public:
 
     MatchController();
-    void Initialize(std::vector<std::string>& PlayerNames);
+    void Initialize(std::vector<PlayerData>& JoinedPlayers);
     bool IsInitialized() const;
     void Start();
     void Update();
@@ -21,13 +22,13 @@ public:
     bool CanUseCard(const Card& Card) const override;
     bool CanUseAnyCard(const std::vector<std::shared_ptr<Card>>& Cards) const override;
     void SetMustUseCard(int16_t CardId) override;
-    bool TryUsingCard(Player& Player, int CardIndex) override;
+    bool TryUsingCard(Player& Player, int CardIndex, bool bNotifyFailedAttempt = true) override;
     bool TryApplyPenalties(Player& Player) override;
     void UseCard(std::shared_ptr<Card>&& Card) override;
-    bool TryYellUno(Player& Player) override;
+    bool TryYellUno(Player& Player, bool bNotifyFailedAttempt = true) override;
     void BuyCardsFor(Player& Player, uint16_t TotalCards) override;
     void DecideCurrentColor(Player& Player) override;
-    bool TrySetCurrentColor(uint8_t ColorId) override;
+    bool TrySetCurrentColor(uint8_t ColorId, bool bNotifyFailedFailedAttempt = true) override;
     const std::shared_ptr<Card> PeekCurrentCard() const override;
     const std::shared_ptr<Player>& GetWinner() const;
     void Shutdown();
@@ -50,7 +51,7 @@ private:
     std::shared_ptr<Player> Winner{};
     int16_t MustUseCardId{-1};
 
-    void CreatePlayers(std::vector<std::string>& Names);
+    void CreatePlayers(std::vector<PlayerData>& JoinedPlayers);
     void GiveInitialCardsToPlayers();
     void ApplyNoUsableCardPenalty(Player& Player);
     bool CanApplyUnoPenalty(const Player& Player) const;

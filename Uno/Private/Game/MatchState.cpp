@@ -5,14 +5,14 @@
 #include "Public/Core/StateMachine.h"
 #include "Public/Game/MatchFinishedState.h"
 
-MatchState::MatchState(const std::vector<std::string>& InPlayerNames)
-    : PlayerNames(InPlayerNames)
+MatchState::MatchState(const std::vector<PlayerData>& InPlayers)
+    : Players(InPlayers)
 { }
 
 void MatchState::Enter()
 {
     MatchController = std::make_shared<class MatchController>();
-    MatchController->Initialize(PlayerNames);
+    MatchController->Initialize(Players);
     MatchController->Start();
 }
 

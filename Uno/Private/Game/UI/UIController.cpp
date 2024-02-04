@@ -18,6 +18,11 @@ void UIController::ShowCurrentTurn(const IMatchHandler& MatchHandler, const ITur
 
 void UIController::ShowPlayerHand(const IMatchHandler& MatchHandler, const Player& Player)
 {
+    if(!Player.IsLocalPlayer() && !bIsSpecMode)
+    {
+        return;
+    }
+    
     std::cout << Player.GetName() << "'s hand:\n";
 
     const std::vector<std::shared_ptr<Card>>& Cards = Player.GetCards();
@@ -35,8 +40,13 @@ void UIController::ShowPlayerHand(const IMatchHandler& MatchHandler, const Playe
     std::cout << "\n\n";
 }
 
-void UIController::ShowAvailableCommands()
+void UIController::ShowAvailableCommands(const Player& Player)
 {
+    if(!Player.IsLocalPlayer())
+    {
+        return;
+    }
+    
     std::string Output{};
 
     Output += "Available Commands:\n";
@@ -176,4 +186,9 @@ void UIController::HandleTurnJumped(const Player& Player)
     std::cout << Output;
 
     ConsoleUtils::Delay(MEDIUM_MESSAGE_MILLISECONDS_DELAY, true);
+}
+
+void UIController::EnableSpecMode()
+{
+    bIsSpecMode = true;
 }

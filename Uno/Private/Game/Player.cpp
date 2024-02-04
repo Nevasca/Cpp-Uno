@@ -1,7 +1,7 @@
 ﻿#include "Public/Game/Player.h"
 
-Player::Player(std::string&& InName)
-    : Name(std::move(InName))
+Player::Player(std::string&& InName, bool bInIsLocalPlayer)
+    : Name(std::move(InName)), bIsLocalPlayer(bInIsLocalPlayer)
 { }
 
 const std::string& Player::GetName() const
@@ -61,4 +61,9 @@ bool Player::HasYelledUno() const
 void Player::SetHasYelledUno(bool bInHasYelledUno)
 {
     bHasYelledUno = bInHasYelledUno;
+}
+
+bool Player::IsLocalPlayer() const
+{
+    return bIsLocalPlayer;
 }

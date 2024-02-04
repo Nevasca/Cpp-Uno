@@ -4,17 +4,17 @@
 
 #include "Public/Core/ConsoleUtils.h"
 
-UILobbyController::UILobbyController(uint16_t InMinPlayers, uint16_t InMaxPlayers)
-    : MinPlayers(InMinPlayers), MaxPlayers(InMaxPlayers)
+UILobbyController::UILobbyController(uint16_t InMinPlayers, uint16_t InMaxPlayers, char InBotSymbol)
+    : MinPlayers(InMinPlayers), MaxPlayers(InMaxPlayers), BotSymbol(InBotSymbol)
 { }
 
-void UILobbyController::ShowCurrentLobby(const std::vector<std::string>& JoinedPlayerNames, const std::string& StartInputName, bool bHasRequiredPlayers)
+void UILobbyController::ShowCurrentLobby(const std::vector<PlayerData>& JoinedPlayers, const std::string& StartInputName, bool bHasRequiredPlayers)
 {
     ConsoleUtils::Clear();
 
     std::string Output{};
 
-    const size_t TotalCurrentPlayers = JoinedPlayerNames.size();
+    const size_t TotalCurrentPlayers = JoinedPlayers.size();
 
     Output += "Uno Lobby [" + std::to_string(TotalCurrentPlayers) + "/" + std::to_string(MaxPlayers) + "]\n";
     Output += "------------------------\n\n";
@@ -26,12 +26,20 @@ void UILobbyController::ShowCurrentLobby(const std::vector<std::string>& JoinedP
     
     Output += "Joined Players:\n";
 
-    for(const std::string& Name : JoinedPlayerNames)
+    for(const PlayerData& Player : JoinedPlayers)
     {
-        Output += "* " + Name + "\n";
+        Output += "* " + Player.Name;
+        Output += Player.bIsBot ? " (Bot)" : "";
+        Output += "\n";
     }
 
-    Output += "\n\n\n";
+    Output += "\n\n";
+
+    Output += "To add a bot, use '";
+    Output += BotSymbol;
+    Output += "' at the end of the bot name, like 'Yukiko";
+    Output += BotSymbol;
+    Output += "'\n\n\n";
 
     std::cout << Output;
 
