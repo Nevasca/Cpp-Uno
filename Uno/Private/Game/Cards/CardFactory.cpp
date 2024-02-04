@@ -6,6 +6,7 @@
 #include "Public/Game/Cards/JumpCard.h"
 #include "Public/Game/Cards/NumberCard.h"
 #include "Public/Game/Cards/ReverseCard.h"
+#include "Public/Game/Cards/WildBuyCard.h"
 
 std::shared_ptr<Card> CardFactory::CreateNumberCard(const EColor InColor, const uint16_t InNumber)
 {
@@ -25,4 +26,9 @@ std::shared_ptr<Card> CardFactory::CreateJumpCard(const EColor InColor, ITurnAct
 std::shared_ptr<Card> CardFactory::CreatePlusTwoCard(const EColor InColor, ITurnActionHandler& InActionHandler)
 {
     return std::make_shared<BuyCard>(PLUS_TWO_CARD_ID, InColor, InActionHandler, 2);
+}
+
+std::shared_ptr<Card> CardFactory::CreateWildPlusFourCard(ITurnActionHandler& InActionHandler)
+{
+    return std::make_shared<WildBuyCard>(WILD_PLUS_FOUR_CARD_ID, InActionHandler, 4);
 }

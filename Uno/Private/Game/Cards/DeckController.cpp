@@ -53,7 +53,7 @@ void DeckController::CreateDeck(ITurnActionHandler& TurnActionHandler)
 {
     Cards.reserve(DeckData::GetTotalCards());
 
-    const std::vector<EColor> AvailableNormalColors = DeckData::GetAvailableNormalColors();
+    const std::vector<EColor> AvailableNormalColors = GetAvailableNormalColors();
 
     CreateNumberCards(AvailableNormalColors);
     CreateSpecialCards(AvailableNormalColors, TurnActionHandler);
@@ -92,6 +92,11 @@ void DeckController::CreateSpecialCards(const std::vector<EColor>& Colors, ITurn
             Cards.emplace_back(CardFactory::CreateJumpCard(Color, TurnActionHandler));
         }
     }
+
+    for(uint32_t i = 0; i < DeckData::WILD_PLUS_FOUR_CARDS; i++)
+    {
+        Cards.emplace_back(CardFactory::CreateWildPlusFourCard(TurnActionHandler));
+    }
 }
 
 void DeckController::RestockDeck()
@@ -112,4 +117,9 @@ void DeckController::RestockDeck()
     }
     
     ShuffleCards();
+}
+
+std::vector<EColor> DeckController::GetAvailableNormalColors() const
+{
+    return DeckData::GetAvailableNormalColors();
 }

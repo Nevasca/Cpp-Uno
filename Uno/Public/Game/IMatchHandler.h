@@ -20,6 +20,8 @@ public:
     virtual const std::shared_ptr<Card> PeekCurrentCard() const = 0;
     virtual bool TryYellUno(Player& Player) = 0;
     virtual void BuyCardsFor(Player& Player, uint16_t TotalCards) = 0;
+    virtual void DecideCurrentColor(Player& Player) = 0;
+    virtual bool TrySetCurrentColor(uint8_t ColorId) = 0;
     virtual ~IMatchHandler() = default;
 
     NO_COPY_MOVE(IMatchHandler)

@@ -10,6 +10,7 @@ public:
     static const ConsoleColor Green;
     static const ConsoleColor Red;
     static const ConsoleColor Yellow;
+    static const ConsoleColor Pink;
     
     static void SetFontColor(uint16_t ColorFlag);
     static void SetFontColor(ConsoleColor Color);

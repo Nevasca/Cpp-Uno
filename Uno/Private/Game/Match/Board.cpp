@@ -1,5 +1,9 @@
 ﻿#include "Public/Game/Match/Board.h"
 
+#include <cassert>
+
+#include "Public/Game/Card.h"
+
 void Board::Stack(std::shared_ptr<Card>&& Card)
 {
     TossedCards.emplace_back(std::move(Card));
@@ -31,4 +35,13 @@ std::vector<std::shared_ptr<Card>> Board::TakeAllCards()
     AllAvailableCards.pop_back();
     
     return AllAvailableCards;
+}
+
+void Board::SetCurrentCardColor(EColor Color)
+{
+    std::shared_ptr<Card> CurrentCard = TossedCards.back();
+    
+    assert(CurrentCard);
+
+    CurrentCard->SetColor(Color);
 }

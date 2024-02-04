@@ -10,7 +10,7 @@ CardConsolePresenter::CardConsolePresenter()
     ColorMapping[EColor::Green] = ConsoleColor::Green;
     ColorMapping[EColor::Red] = ConsoleColor::Red;
     ColorMapping[EColor::Yellow] = ConsoleColor::Yellow;
-    ColorMapping[EColor::Wild] = ConsoleColor::White;
+    ColorMapping[EColor::Wild] = ConsoleColor::Pink;
 }
 
 void CardConsolePresenter::Show(const Card& Card)
@@ -55,4 +55,9 @@ void CardConsolePresenter::Show(const std::vector<CardRenderData>& CardsData)
     Output += "\n";
 
     std::cout << Output;
+}
+
+const std::map<EColor, ConsoleColor>& CardConsolePresenter::GetColorMapping() const
+{
+    return ColorMapping;
 }

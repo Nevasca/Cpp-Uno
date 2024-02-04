@@ -30,3 +30,20 @@ inline std::string ConvertColorToString(const EColor Color)
 
     return "Unknown";
 }
+
+inline bool TryUIntToColor(uint8_t ColorId, EColor& OutColor)
+{
+    OutColor = static_cast<EColor>(ColorId);
+    
+    switch (OutColor)
+    {
+        case EColor::Blue:
+        case EColor::Yellow:
+        case EColor::Red:
+        case EColor::Green:
+        case EColor::Wild:
+            return true;
+    }
+
+    return false;
+}

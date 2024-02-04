@@ -24,6 +24,9 @@ public:
     void ShowUnoYell();
     void ShowUnoNotYelledPenalty(const Player& Player, const std::vector<std::shared_ptr<Card>>& PenaltyCards);
     void ShowBoughtCards(const Player& Player, const std::vector<std::shared_ptr<Card>>& BoughtCards);
+    void ShowChooseColor(const std::vector<EColor>& AvailableColors);
+    void ShowInvalidColorWarning();
+    void ShowCardColorChanged(EColor Color);
     void HandleTurnFlowReversed() override;
     void HandleTurnJumped(const Player& Player) override;
 

@@ -222,6 +222,45 @@ void MatchController::BuyCardsFor(Player& Player, uint16_t TotalCards)
     Player.GiveCards(BoughtCards);
 }
 
+void MatchController::DecideCurrentColor(Player& Player)
+{
+    UIController.ShowChooseColor(DeckController.GetAvailableNormalColors());
+
+    Player.ChooseColor(*this);
+}
+
+bool MatchController::TrySetCurrentColor(uint8_t ColorId)
+{
+    std::vector<EColor> AvailableColors = DeckController.GetAvailableNormalColors();
+
+    EColor ChosenColor;
+    
+    if(!TryUIntToColor(ColorId, ChosenColor) ||
+        !CanChooseColor(ChosenColor, AvailableColors))
+    {
+        UIController.ShowInvalidColorWarning();
+        return false;
+    }
+
+    Board.SetCurrentCardColor(ChosenColor);
+    UIController.ShowCardColorChanged(ChosenColor);
+    
+    return true;
+}
+
+bool MatchController::CanChooseColor(EColor Color, const std::vector<EColor>& AvailableColors) const
+{
+    for(const EColor AvailableColor : AvailableColors)
+    {
+       if(Color == AvailableColor)
+       {
+           return true;
+       }
+    }
+
+    return false;
+}
+
 bool MatchController::HasPlayerWon(const Player& Player) const
 {
     return Player.GetTotalCards() == 0;

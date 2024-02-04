@@ -133,6 +133,35 @@ void UIController::ShowBoughtCards(const Player& Player, const std::vector<std::
     ConsoleUtils::Delay(LONG_MESSAGE_MILLISECONDS_DELAY, true);
 }
 
+void UIController::ShowChooseColor(const std::vector<EColor>& AvailableColors)
+{
+    std::map<EColor, ConsoleColor> ColorMapping = CardPresenter.GetColorMapping();
+
+    std::cout << "Choose a color for the used card:\n";
+
+    for(EColor Color : AvailableColors)
+    {
+        std::cout << ConsoleColor::White << std::to_string(static_cast<uint8_t>(Color)) << ": ";
+        std::cout << ColorMapping[Color] << ConvertColorToString(Color) << "\n";
+    }
+
+    std::cout << ConsoleColor::White << "\n\n";
+}
+
+void UIController::ShowInvalidColorWarning()
+{
+    std::cout << "Please select a valid color\n";
+}
+
+void UIController::ShowCardColorChanged(EColor Color)
+{
+    std::map<EColor, ConsoleColor> ColorMapping = CardPresenter.GetColorMapping();
+    
+    std::cout << "\n\nCurrent table card is now " << ColorMapping[Color] << ConvertColorToString(Color) << ConsoleColor::White << "\n\n";
+
+    ConsoleUtils::Delay(MEDIUM_MESSAGE_MILLISECONDS_DELAY, true);
+}
+
 void UIController::HandleTurnFlowReversed()
 {
     std::cout << "\n\nTurn flow reversed!\n\n";
