@@ -27,22 +27,32 @@ void TurnConsolePresenter::ShowTile(const ITurnHandler& TurnHandler)
 
 void TurnConsolePresenter::ShowPlayers(const ITurnHandler& TurnHandler)
 {
-    std::string Output{};
-
     std::string FlowSymbol = TurnHandler.GetCurrentFlow() == ETurnFlow::Clockwise ? ">>" : "<<";
     
     for(const std::shared_ptr<Player>& Player : TurnHandler.GetOrderedPlayers())
     {
+        std::string Output{};
+
         if(Player == TurnHandler.PeekCurrentPlayer())
         {
-            Output += FlowSymbol + "  |" + Player->GetName() + "[" + std::to_string(Player->GetTotalCards()) + "]|" + "  ";
+            std::cout << FlowSymbol;
+
+            ConsoleColor::SetFontColor(ConsoleColor::Yellow);
+
+            Output += "  |" + Player->GetName() + "[" + std::to_string(Player->GetTotalCards()) + "]|" + "  ";
+            std::cout << Output;
+            
+            ConsoleColor::SetFontColor(ConsoleColor::White);
         }
         else
         {
             Output += FlowSymbol + "  " + Player->GetName() + "[" + std::to_string(Player->GetTotalCards()) + "]" + "  ";
+
+            std::cout << Output;
         }
     }
     
+    std::string Output{};
     Output += FlowSymbol;
     Output += "\n\n";
 
