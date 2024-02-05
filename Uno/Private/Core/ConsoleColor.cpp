@@ -3,7 +3,7 @@
 #include "Windows.h"
 
 const ConsoleColor ConsoleColor::White = {7};
-const ConsoleColor ConsoleColor::Blue = {FOREGROUND_BLUE};
+const ConsoleColor ConsoleColor::Blue = {FOREGROUND_BLUE | FOREGROUND_GREEN};
 const ConsoleColor ConsoleColor::Green = {FOREGROUND_GREEN};
 const ConsoleColor ConsoleColor::Red = {FOREGROUND_RED};
 const ConsoleColor ConsoleColor::Yellow = {FOREGROUND_RED | FOREGROUND_GREEN};
