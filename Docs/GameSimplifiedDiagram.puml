@@ -4,31 +4,46 @@
 'Remove turning ~ into an icon so we can better declare destructors
 skinparam classAttributeIconSize 0
 
-package Uno
+package Core
 {
-    class UnoGame
-    {
-        GameState CurrentState
-        bool IsFinished() const
-        bool Update()
-    }
-    
-    abstract class GameState
+    class ConsoleColor
+    class ConsoleUtils
+    class StateMachine
+    interface IState 
     {
         void Enter()
         void Exit()
         void Update()
     }
     
+    StateMachine ..> IState
+    IState --> StateMachine
+}
+
+package Uno
+{
+    class UnoGame
+    {
+        StateMachine StateMachine
+        bool IsFinished() const
+        bool Update()
+    }
+    
     package MaiMenu
     {
         class MainMenuController
         class MainMenuState
+        class LobbyState
+        class LobbyController
+        
+        MainMenuState ---> LobbyState
+        LobbyState --> LobbyController
     }
     
     package Game
     {
-        class MatchState        
+        class MatchState    
+        class MatchFinishedState    
     
         interface IMatchHandler
         
@@ -43,9 +58,11 @@ package Uno
         
         interface ITurnHandler
         
+        interface ITurnEventListener
+        
         abstract class TurnAction
         
-        interface IDeckHandler
+        interface IHasCards
        
         abstract class Card 
         
@@ -108,26 +125,40 @@ package Uno
         {
             class UIController
             class CardConsolePresenter
+            class TurnConsolePresenter
         }
         
+        package Outcome
+        {
+            class MatchOutcomeController
+            
+            MatchFinishedState --> MatchOutcomeController
+            MatchFinishedState ---> MainMenuState
+            MatchFinishedState ---> LobbyState
+        }        
+        
+        UIController --|> ITurnEventListener
         UIController ...> Card             
         UIController ...> Player             
         IMatchHandler <... UIController              
         UIController ...> ITurnHandler                     
-        UIController --> CardConsolePresenter        
+        UIController --> CardConsolePresenter
+        UIController --> TurnConsolePresenter        
         
         MatchController ...> Card
         MatchController ...> Player
         MatchController ---> DeckController
         MatchController ---> TurnController
-        MatchController ----> Board
+        MatchController -> Board
         MatchController ---> UIController
-        MatchController --|> IMatchHandler 
+        MatchController --|> IMatchHandler
         
-        Player ...> IMatchHandler 
+        IMatchHandler ..> Player         
+        Player ..> IMatchHandler 
         TurnController ...> IMatchHandler 
         
         TurnController ---|> ITurnActionHandler 
+        TurnController ...> ITurnEventListener
         ITurnHandler <|-- TurnController
         TurnController -> ETurnFlow
         TurnController ---> ETurnResult
@@ -135,8 +166,8 @@ package Uno
         TurnController ...> Player 
         
         Card -> EColor
-        Card <|---- NumberCard
-        Card <|-- BuyCard
+        Card <|--- NumberCard
+        Card <|--- BuyCard
         Card <|--- ReverseCard
         Card <|--- JumpCard
         Card <|--- WildBuyCard
@@ -152,10 +183,10 @@ package Uno
         ChooseColorTurnAction ---|> TurnAction
         BuyTurnAction ---|> TurnAction
         
-        JumpCard ...> ITurnActionHandler
-        ReverseCard ....> ITurnActionHandler
-        BuyCard ....> ITurnActionHandler
-        WildBuyCard ....> ITurnActionHandler 
+        JumpCard ....o ITurnActionHandler
+        ReverseCard ....o ITurnActionHandler
+        BuyCard ....o ITurnActionHandler
+        WildBuyCard ....o ITurnActionHandler 
         ITurnActionHandler ...> TurnAction                              
                
         Player ...> Card
@@ -165,10 +196,9 @@ package Uno
         CardFactory ---> JumpCard 
         CardFactory ---> WildBuyCard 
         
-        IDeckHandler <|--- DeckController
-        IDeckHandler <|--- Board
+        IHasCards <.. DeckController
+        IHasCards <|-- Board
         DeckController --> CardFactory
-        DeckController ...> ITurnActionHandler    
         
         Player <|-- HumanPlayer    
         Player <|-- PlayerBot
@@ -177,15 +207,17 @@ package Uno
         TurnAction -> ETurnResult
         TurnAction ..> ITurnHandler   
         
-        GameState <|--- MatchState
-        MatchState ---> MatchController     
+        MatchState ---> MatchController
+        MatchState ---> MatchFinishedState     
+        LobbyState ---> MatchState
     }  
              
     MainMenuState --> MainMenuController
-    GameState <|--- MainMenuState
     
     UnoGame ---> MainMenuState
     UnoGame ---> MatchState
 }
+
+
 
 @enduml
